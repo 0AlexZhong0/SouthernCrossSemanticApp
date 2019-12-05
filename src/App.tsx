@@ -1,10 +1,14 @@
-import * as React from 'react'
-import SimpleButton from 'Components/SimpleButton'
+import * as React from "react";
+import SimpleButton from "Components/SimpleButton";
+import DemoCheckBox from "Components/DemoCheckBox";
 
-const App = () => {
+const App = (): JSX.Element => {
   return (
-     <SimpleButton onClickLogMsg={() => console.log("hello world")}/>
+    <React.Fragment>
+      <SimpleButton onClickLogMsg={() => console.log("hello world")} />
+      <DemoCheckBox />
+    </React.Fragment>
   );
-}
+};
 
 export default App;
