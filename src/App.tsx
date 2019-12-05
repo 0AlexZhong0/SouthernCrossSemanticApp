@@ -1,10 +1,9 @@
 import * as React from 'react'
+import SimpleButton from 'Components/SimpleButton'
 
 const App = () => {
   return (
-    <div>
-      Hello World
-    </div>
+     <SimpleButton onClickLogMsg={() => console.log("hello world")}/>
   );
 }
 
