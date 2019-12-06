@@ -23,5 +23,6 @@ const requests = (
   return apiPromise;
 };
 
-export const BASE_URL = "https://sandbox-authservice.priaid.ch";
+export const AUTH_BASE_URL = "https://sandbox-authservice.priaid.ch";
+export const HEALTH_BASE_URL = "https://sandbox-healthservice.priaid.ch"
 export default requests;

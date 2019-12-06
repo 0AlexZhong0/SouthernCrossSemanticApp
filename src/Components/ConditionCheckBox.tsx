@@ -1,8 +1,8 @@
 import * as React from "react";
 import { Checkbox, FormControlLabel } from "@material-ui/core";
 
-const DemoCheckBox = (): JSX.Element => {
-  const [isChecked, setIsChecked] = React.useState(true);
+const ConditionCheckBox = (props: { condition: string }): JSX.Element => {
+  const [isChecked, setIsChecked] = React.useState(false);
   const tickOrUntick = (): void => {
     if (isChecked) {
       setIsChecked(false);
@@ -17,9 +17,9 @@ const DemoCheckBox = (): JSX.Element => {
       control={
         <Checkbox checked={isChecked} onChange={tickOrUntick} />    
       }
-      label="Do you have asthma"
+      label={props.condition}
     />
   );
 };
 
-export default DemoCheckBox;
+export default ConditionCheckBox;

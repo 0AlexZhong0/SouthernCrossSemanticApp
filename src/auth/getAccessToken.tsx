@@ -1,9 +1,9 @@
 import getHashedCredString from './getHashedCredString'
-import { BASE_URL } from 'SymptomCheckerApi/ApiUtilities/requests'
+import { AUTH_BASE_URL } from 'SymptomCheckerApi/ApiUtilities/requests'
 import requests from 'SymptomCheckerApi/ApiUtilities/requests'
 
 const getAccessToken = (): Promise<any> => {
-  const login_uri: string = BASE_URL + "/login";
+  const login_uri: string = AUTH_BASE_URL + "/login";
 
   // keep cred secure in an .env file
   const api_key: string = "919805935@qq.com"; // the username to access the api
