@@ -2,6 +2,7 @@ import * as React from "react";
 import { Checkbox, FormControlLabel } from "@material-ui/core";
 
 const ConditionCheckBox = (props: { condition: string }): JSX.Element => {
+  // also change the state so that the app knows what are the conditions that got populated
   const [isChecked, setIsChecked] = React.useState(false);
   const tickOrUntick = (): void => {
     if (isChecked) {

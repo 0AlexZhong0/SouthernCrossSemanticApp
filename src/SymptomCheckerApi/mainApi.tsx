@@ -6,7 +6,7 @@ import requests from "SymptomCheckerApi/ApiUtilities/requests";
 
 // hard-coded functions session, perhaps do not need to export all these functions
 // think of a way to encompass all the functions written below
-// heart attack example
+// 87 is a heart attack example
 export const getIssueId = (issue: string): number => {
   return 87
 }
