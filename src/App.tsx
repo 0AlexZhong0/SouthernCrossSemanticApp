@@ -31,12 +31,16 @@ const populateSymptoms = (): void => {
           // conditions.push(<div>Hello World</div> )
           conditions.push(issue.Issue.Name)
         })
+      // 
+      console.log(conditions)
+      console.log("length",conditions.length)
+      setForm({symptom: res.PossibleSymptoms, conditions})  
       })
       // Not sure why the array resets to be emptied
       // Work on this further
-      console.log(conditions)
-      console.log(conditions.length)
-      setForm({symptom: res.PossibleSymptoms, conditions})      
+
+      // D: I think one of the variables will be out of scope from the function if placed here 
+         
     })
   }
   
@@ -45,7 +49,10 @@ const populateSymptoms = (): void => {
       <GetSymptomsButton onClickLogMsg={populateSymptoms}/>
       <ConditionCheckBox  condition="Heart Attack" />
       <div>
+        <h4> Symptoms </h4>
         {form.symptom}
+        <h4> Conditions </h4>
+        {form.conditions}
       </div>
     </React.Fragment>
   );
