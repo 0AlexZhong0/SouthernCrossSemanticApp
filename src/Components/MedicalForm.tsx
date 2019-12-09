@@ -81,14 +81,14 @@ const MedicalForm = (): JSX.Element => {
   return (
     <React.Fragment>
       <CustomCheckBox text="Heart Attack" />
-      <CustomButton loadComponent={() => populateSymptoms("Heart Attack")} title="Get Symptoms"/>
       <div>
-        <h4> Symptoms </h4>
-        {form.symptomsCheckBoxes}
-        <h4> Conditions </h4>
-        <CustomButton loadComponent={populateConditions} title="Get Conditions" />
-        {form.conditions}
+      <CustomButton loadComponent={() => populateSymptoms("Heart Attack")} title="Get Symptoms"/>
       </div>
+          <div>
+              {form.symptomsCheckBoxes}
+              <CustomButton loadComponent={populateConditions} title="Get Conditions" />
+              {form.conditions}
+          </div>
     </React.Fragment>
   );
 };
