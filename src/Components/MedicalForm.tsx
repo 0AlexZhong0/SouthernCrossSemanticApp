@@ -1,7 +1,7 @@
 import * as React from "react";
 import CustomButton from "Components/Helpers/CustomButton";
 import CustomCheckBox from "Components/Helpers/CustomCheckBox";
-import { diagnoseConditionsFromSymptoms1,diagnoseConditionsFromSymptoms2, getIssueId1, getIssueId2, getIssueInfo } from "SymptomCheckerApi/mainApi"
+import { diagnoseConditionsFromSymptoms,getIssueId, getIssueInfo } from "SymptomCheckerApi/mainApi"
 
 // include all these code in a separate file called MedicalForm.tsx
 interface IForm {
@@ -58,18 +58,9 @@ const MedicalForm = (): JSX.Element => {
   // D: Don't know why but presssing "get symptoms" will return the same conditions depending
   // on what issue is selected, but this function returns the correct hard code conditions
   // need to keep working on this hard code
-  const populateSymptomsID1 = (condition: string): void => {
-    const issueId: number = getIssueId1(condition)
-    populateSymptoms(issueId)
-  }
-
-  const populateSymptomsID2 = (condition: string): void => {
-    const issueId: number = getIssueId2(condition)
-    populateSymptoms(issueId)
-  }
-
-
-const populateSymptoms = (issueId: number): void => {
+ 
+const populateSymptoms = (condition: string): void => {
+    const issueId: number = getIssueId(condition)
     const symptomsCheckBoxes: JSX.Element[] = []
     getIssueInfo(issueId).then((res: { PossibleSymptoms: string }) => {
       
@@ -85,9 +76,9 @@ const populateSymptoms = (issueId: number): void => {
 
 
 // for heart attack conditions
-  const populateConditions1 = (): void => {
+  const populateConditions = (): void => {
     const conditions: JSX.Element[] = []    
-    const diagnoseResult: Promise<any> = diagnoseConditionsFromSymptoms1(form.symptomsArray, "male", 1993)
+    const diagnoseResult: Promise<any> = diagnoseConditionsFromSymptoms(form.symptomsArray, "male", 1993)
     // populate the potential related issues and display more checkbox onto the page            
     diagnoseResult.then((result: IResult[]): void => {
       result.forEach((issue: IIssue, index: number): void => {
@@ -98,46 +89,29 @@ const populateSymptoms = (issueId: number): void => {
     })
   }
  
-  // D: *** very inefficent way to duplicate same function will probably change later ***
 
-// for hernia conditions
-  const populateConditions2 = (): void => {
-    const conditions: JSX.Element[] = []    
-    const diagnoseResult: Promise<any> = diagnoseConditionsFromSymptoms2(form.symptomsArray, "male", 1993)
-    // populate the potential related issues and display more checkbox onto the page            
-    diagnoseResult.then((result: IResult[]): void => {
-      result.forEach((issue: IIssue, index: number): void => {
-        const IssueName: string = issue.Issue.Name
-        conditions.push(<CustomCheckBox text={IssueName} key={IssueName + `${index}`} />)
-      })
-    setForm({ conditions } as IForm)
-    })
-  }
 
 
 
   return (
     <React.Fragment>
+      <div>
       <CustomCheckBox text="Heart Attack" />
       <div>
-      <CustomButton loadComponent={() => populateSymptomsID1("Heart Attack")} title="Get Symptoms"/>
+      <CustomButton loadComponent={() => populateSymptoms("Heart Attack")} title="Get Symptoms"/>
+      
       </div>
           <div>
               {form.symptomsCheckBoxes}
-              <CustomButton loadComponent={populateConditions1} title="Get Conditions" />
+              <CustomButton loadComponent={populateConditions} title="Get Conditions" />
               {form.conditions}
           </div>
+     </div>
 
-     <CustomCheckBox text="Abdominal hernia" />
-      <div>
-      <CustomButton loadComponent={() => populateSymptomsID2("Abdominal hernia")} title="Get Symptoms"/>
-      </div>
-          <div>
-              {form.symptomsCheckBoxes}
-              <CustomButton loadComponent={populateConditions2} title="Get Conditions" />
-              {form.conditions}
-          </div>
+     <br></br>
 
+    
+    
     </React.Fragment>
   );
 };
