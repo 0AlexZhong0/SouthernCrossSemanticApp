@@ -53,13 +53,11 @@ const MedicalForm = (): JSX.Element => {
 
 
 
-  // D: seperate from old "populateSymptoms" function into two functions to make hard code easier
+  // *** D: seperate from old "populateSymptoms" function into two functions to make hard code parts easier ***
   
   // D: Don't know why but presssing "get symptoms" will return the same conditions depending
   // on what issue is selected, but this function returns the correct hard code conditions
   // need to keep working on this hard code
-  
-  
   const populateSymptomsID1 = (condition: string): void => {
     const issueId: number = getIssueId1(condition)
     populateSymptoms(issueId)
@@ -85,8 +83,8 @@ const populateSymptoms = (issueId: number): void => {
     })
   }
 
-  
 
+// for heart attack conditions
   const populateConditions1 = (): void => {
     const conditions: JSX.Element[] = []    
     const diagnoseResult: Promise<any> = diagnoseConditionsFromSymptoms1(form.symptomsArray, "male", 1993)
@@ -99,7 +97,10 @@ const populateSymptoms = (issueId: number): void => {
     setForm({ conditions } as IForm)
     })
   }
+ 
+  // D: *** very inefficent way to duplicate same function will probably change later ***
 
+// for hernia conditions
   const populateConditions2 = (): void => {
     const conditions: JSX.Element[] = []    
     const diagnoseResult: Promise<any> = diagnoseConditionsFromSymptoms2(form.symptomsArray, "male", 1993)
@@ -112,6 +113,8 @@ const populateSymptoms = (issueId: number): void => {
     setForm({ conditions } as IForm)
     })
   }
+
+
 
   return (
     <React.Fragment>

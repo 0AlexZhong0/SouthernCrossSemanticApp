@@ -11,6 +11,7 @@ export const getIssueId1 = (issue: string): number => {
   return 87
 }
 
+// abdominal hernia
 export const getIssueId2 = (issue: string): number => {
   return 130
 }
@@ -22,7 +23,7 @@ export const getSymptomIds1 = (symptoms: string[]): number[] => {
 }
 
 export const getSymptomIds2 = (symptoms: string[]): number[] => {
-  const symptomIds: number[] = [44, 10]  // only has two symptoms
+  const symptomIds: number[] = [44, 10]  // abdominal hernia only has two symptoms
   return symptomIds
 }
 
@@ -41,6 +42,8 @@ export const getIssueInfo = (issuedId: number): Promise<any> => {
   return issueInfo;
 };
 
+
+// for heart attack diagnose conditions
 export const diagnoseConditionsFromSymptoms1 = (symptoms: string[], sex: string, year_of_birth: number | string): Promise<any> =>  {
   const symptomIds = getSymptomIds1(symptoms)
   const diagnosis = getAccessToken().then((token: {Token: string}) => {
@@ -53,6 +56,9 @@ export const diagnoseConditionsFromSymptoms1 = (symptoms: string[], sex: string,
   return diagnosis
 };
 
+// D: *** very inefficent way to duplicate same function will probably change later ***
+
+// for heart attack hernia conditions
 export const diagnoseConditionsFromSymptoms2 = (symptoms: string[], sex: string, year_of_birth: number | string): Promise<any> =>  {
   const symptomIds = getSymptomIds2(symptoms)
   const diagnosis = getAccessToken().then((token: {Token: string}) => {
