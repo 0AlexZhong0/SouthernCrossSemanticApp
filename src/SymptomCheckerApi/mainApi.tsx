@@ -43,4 +43,3 @@ export const diagnoseConditionsFromSymptoms = (symptoms: string[], sex: string, 
    
   return diagnosis
 }
-

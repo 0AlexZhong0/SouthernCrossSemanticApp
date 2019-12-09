@@ -1,56 +1,59 @@
 import * as React from "react";
 import GetSymptomsButton from "Components/GetSymptomsButton";
-import ConditionCheckBox from "Components/ConditionCheckBox";
-import { diagnoseConditionsFromSymptoms ,getIssueId, getIssueInfo } from "SymptomCheckerApi/mainApi"
+import CustomCheckBox from "Components/CustomCheckBox";
+import { diagnoseConditionsFromSymptoms, getIssueId, getIssueInfo } from "SymptomCheckerApi/mainApi"
 
 interface IForm {
-  symptom: string,
+  symptoms: JSX.Element[],
   conditions: JSX.Element[]
+}
+
+interface IIssue {
+  Issue: { Accuracy: number, ID: number, Name: string }
+}
+
+interface IResult extends IIssue {
+  index: number
 }
 
 // run the localhost with chrome with this command to bypass cors
 // google-chrome --disable-web-security --user-data-dir=~/.google-chrome-root or chrome
 const App = (): JSX.Element => {
   // this block of code can migrate to a different file
-  // need to make the state an JSON object soon, implement an interface with it
-  // can refer back to the doc I saw yesterday  
   const [form, setForm] = React.useState<IForm>({
-    symptom: "",
+    symptoms: [],
     conditions: []
   })
 
-const populateSymptoms = (): void => {
+  const populateSymptoms = (): void => {
     const issueId: number = getIssueId("Heart Attack")
-    let conditions: any[] = []  // should be type of JSX.Element[]
-    getIssueInfo(issueId).then((res: {PossibleSymptoms: string}) => {
-      const possibleSyms: string[] = res.PossibleSymptoms.split(" ")
+    let conditions: JSX.Element[] = []
+    getIssueInfo(issueId).then((res: { PossibleSymptoms: string }) => {
+      const possibleSyms: string[] = res.PossibleSymptoms.split(",")
       const diagnoseResult: Promise<any> = diagnoseConditionsFromSymptoms(possibleSyms, "male", 1993)
-      // use a map functions to populate the potential related issues and display more checkbox onto the page            
-      diagnoseResult.then((result: any[]): void => {
-        result.map((issue: {Issue: {Accuracy: number, ID: number, Name: string}}, index: number): void => {
-          // conditions.push(<div>Hello World</div> )
-          conditions.push(issue.Issue.Name)
+      // populate the potential related issues and display more checkbox onto the page            
+      diagnoseResult.then((result: IResult[]): void => {
+        result.forEach((issue: IIssue, index: number): void => {
+          const IssueName: string = issue.Issue.Name
+          conditions.push(<CustomCheckBox text={IssueName} key={IssueName + `${index}`} />)
         })
-      // 
-      console.log(conditions)
-      console.log("length",conditions.length)
-      setForm({symptom: res.PossibleSymptoms, conditions})  
-      })
-      // Not sure why the array resets to be emptied
-      // Work on this further
+        const symptoms: JSX.Element[] = []        
 
-      // D: I think one of the variables will be out of scope from the function if placed here 
-         
+        possibleSyms.forEach((symptom: string, index: number): void => {
+          symptoms.push(<CustomCheckBox text={symptom} key={symptom + `${index}`}/>)
+        });
+        setForm({ symptoms, conditions })
+      })
     })
   }
-  
+
   return (
     <React.Fragment>
-      <GetSymptomsButton onClickLogMsg={populateSymptoms}/>
-      <ConditionCheckBox  condition="Heart Attack" />
+      <GetSymptomsButton onClickLogMsg={populateSymptoms} />
+      <CustomCheckBox text="Heart Attack" />
       <div>
         <h4> Symptoms </h4>
-        {form.symptom}
+        {form.symptoms}
         <h4> Conditions </h4>
         {form.conditions}
       </div>
