@@ -8,15 +8,38 @@ import requests from "SymptomCheckerApi/ApiUtilities/requests";
 // think of a way to encompass all the functions written below
 // 87 is a heart attack example
 export const getIssueId = (issue: string): number => {
-  return 87
+  if(issue == "Heart Attack"){
+    return 87;
+  }
+ 
+  if(issue == "Coronary heart disease"){
+    return 86;
+  }
+
+  return 0; // D: hardcoded so will never reach here
 }
 
 
 export const getSymptomIds = (symptoms: string[]): number[] => {
-  const symptomIds: number[] = [29, 144, 17]  // select the top three of 
-  return symptomIds
-}
 
+  // console.log(symptoms)
+    
+  const heartattacksymptoms = ["Shortness of breath", "Unconsciousness", " short", "Chest pain", "Chest tightness", "Vomiting", "Weight gain", "Palpitations", "Cold sweats", "Tiredness", "Going black before the eyes", "Nausea"]
+  const coronaryheartsymptoms = ["Chest pain", "Chest tightness", "Cold sweats", "Going black before the eyes", "Heartburn", "Shortness of breath", "Tiredness", "Unconsciousness", " short", "Weight gain"]  
+ 
+  if(symptoms.toString() === heartattacksymptoms.toString() ){
+    return [29, 144, 17];  // select the top three of
+   }
+  
+  if(symptoms.toString() === coronaryheartsymptoms.toString() ){
+   return [17,31,139];  // select the top three of
+  }
+
+  else{
+    return  [0,0,0] // D: hardcoded so will never reach here
+  }
+
+}
 
 
 // token required session
@@ -33,7 +56,6 @@ export const getIssueInfo = (issuedId: number): Promise<any> => {
     .catch(err => console.log(err));
   return issueInfo;
 };
-
 
 
 export const diagnoseConditionsFromSymptoms = (symptoms: string[], sex: string, year_of_birth: number | string): Promise<any> =>  {

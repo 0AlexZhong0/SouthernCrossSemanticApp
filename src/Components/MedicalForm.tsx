@@ -26,6 +26,7 @@ const MedicalForm = (): JSX.Element => {
     symptomsArray: [],
     conditions: []
   })
+ 
 
   // old implementation of getting the conditions and the symptoms at the same time
   // const populateSymptomsAndCondtions = (condition: string): void => {
@@ -52,33 +53,29 @@ const MedicalForm = (): JSX.Element => {
   // }
 
 
-
-  // *** D: seperate from old "populateSymptoms" function into two functions to make hard code parts easier ***
-  
-  // D: Don't know why but presssing "get symptoms" will return the same conditions depending
-  // on what issue is selected, but this function returns the correct hard code conditions
-  // need to keep working on this hard code
- 
 const populateSymptoms = (condition: string): void => {
     const issueId: number = getIssueId(condition)
     const symptomsCheckBoxes: JSX.Element[] = []
     getIssueInfo(issueId).then((res: { PossibleSymptoms: string }) => {
       
       const possibleSyms: string[] = res.PossibleSymptoms.split(",")
-      console.log(possibleSyms)
       possibleSyms.forEach((symptom: string, index: number): void => {
         symptomsCheckBoxes.push(<CustomCheckBox text={symptom} key={symptom + `${index}`} />)
       })
-
-      setForm({ symptomsCheckBoxes, symptomsArray: possibleSyms } as IForm)
+      // form.symptomsArray = possibleSyms // *** D: without this line dunno why the symptomsArray will always be empty ????
+      setForm({ symptomsCheckBoxes, symptomsArray : possibleSyms } as IForm)
     })
+  
   }
 
 
-// for heart attack conditions
   const populateConditions = (): void => {
-    const conditions: JSX.Element[] = []    
+    const conditions: JSX.Element[] = []
+
+    // D: need to press "Get symptoms" first for form.symtoms to not be an empty array
     const diagnoseResult: Promise<any> = diagnoseConditionsFromSymptoms(form.symptomsArray, "male", 1993)
+    
+  
     // populate the potential related issues and display more checkbox onto the page            
     diagnoseResult.then((result: IResult[]): void => {
       result.forEach((issue: IIssue, index: number): void => {
@@ -89,9 +86,6 @@ const populateSymptoms = (condition: string): void => {
     })
   }
  
-
-
-
 
   return (
     <React.Fragment>
@@ -109,6 +103,19 @@ const populateSymptoms = (condition: string): void => {
      </div>
 
      <br></br>
+
+     <div>
+      <CustomCheckBox text="Coronary heart disease" />
+      <div>
+      <CustomButton loadComponent={() => populateSymptoms("Coronary heart disease")} title="Get Symptoms"/>
+      
+      </div>
+          <div>
+              {form.symptomsCheckBoxes}
+              <CustomButton loadComponent={populateConditions} title="Get Conditions" />
+              {form.conditions}
+          </div>
+     </div>
 
     
     
