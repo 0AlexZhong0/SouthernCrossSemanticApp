@@ -11,7 +11,7 @@ def index():
 	# considr moving the api logic to a different endpoint
 	if request.method == "POST":		
 		payload = request.get_json()
-		# name variables depending on if it's about issue
+		# name variables depending on if it's about issue or symptoms
 		if payload["isIssue"]:
 			df = issues_df
 			names = payload["issues"]
@@ -20,14 +20,12 @@ def index():
 			df = symptoms_df
 			names = payload["symptoms"]
 			index = "symptom_ids"
-		print(f"names are {names}")
-		print(f"index is {index}")
 		ids = get_ids(df, names)
-		data = {index: ids}
+		data = json.dumps({index: ids})
 
-		return json.dumps(data)
+		return data
 
-	return "Flask index page here"  # return the issue_id of those symptoms here
+	return "Index Page"
 
 if __name__ == "__main__":
 	app.run(debug=True, port=8080)
