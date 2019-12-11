@@ -1,7 +1,7 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
-node_modules
+client/node_modules
 /.pnp
 .pnp.js
 
@@ -23,16 +23,16 @@ yarn-debug.log*
 yarn-error.log*
 
 # python flask
-__pycache__
-.ipynb_checkpoints
-.ipynb
+server/flask/__pycache__
+server/flask/.ipynb_checkpoints
+server/flask/.ipynb
 
 # virtual environment
-VENV
-ENV
-venv
-.venv
-.env
+server/flask/VENV
+server/flask/ENV
+server/flask/venv
+server/flask/.venv
+server/flask/.env
 
 # code
 .vscode
