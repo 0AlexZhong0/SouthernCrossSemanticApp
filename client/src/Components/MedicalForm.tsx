@@ -3,8 +3,6 @@ import CustomButton from "Components/Helpers/CustomButton";
 import CustomCheckBox from "Components/Helpers/CustomCheckBox";
 import { diagnoseConditionsFromSymptoms,getIssueId, getIssueInfo } from "SymptomCheckerApi/mainApi"
 
-// include all these code in a separate file called MedicalForm.tsx
-
 interface IIssue {
   Issue: { Accuracy: number, ID: number, Name: string }
 }
@@ -14,7 +12,7 @@ interface IResult extends IIssue {
 }
 
 // run the localhost with chrome with this command to bypass cors
-// google-chrome --disable-web-security --user-data-dir=~/.google-chrome-root or chrome
+// chrome --disable-web-security --user-data-dir="~/.google-chrome-root"
 const MedicalForm = (): JSX.Element => {
  
     const [symptomsCheckBoxes, setSymptomsCheckBoxes] = React.useState([] as JSX.Element[])
@@ -61,33 +59,33 @@ const populateSymptoms = (condition: string): void => {
           <div>
               <CustomButton loadComponent={() => populateSymptoms("Heart Attack")} title="Get Symptoms"/>
               {symptomsCheckBoxes}
-              <br></br>
+              <br />
               <CustomButton loadComponent={populateConditions} title="Get Conditions" />
               {conditionsCheckBoxes}
             
           </div>
       </div>
       
-     <br></br>
+     <br />
 
      <div>
          <CustomCheckBox text="Obstruction of a pulmonary artery" />
          <div>
              <CustomButton loadComponent={() => populateSymptoms("Obstruction of a pulmonary artery")} title="Get Symptoms"/>
-             <br></br>
+             <br />
              <CustomButton loadComponent={populateConditions} title="Get Conditions" />
             
          </div>
      </div>
 
-     <br></br>
-     <br></br>
+     <br />
+     <br />
 
      <div>
          <CustomCheckBox text="Coronary heart disease" />
          <div>
              <CustomButton loadComponent={() => populateSymptoms("Coronary heart disease")} title="Get Symptoms"/> 
-             <br></br>
+             <br />
              <CustomButton loadComponent={populateConditions} title="Get Conditions" />
             
           </div>
