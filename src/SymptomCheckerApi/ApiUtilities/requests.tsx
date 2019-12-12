@@ -1,11 +1,11 @@
 const requests = (
   uri: string,
-  methods: Object = { method: "GET", headers: { "Access-Control-Allow-Origin": "*" } }
- // methods: Object = { method: "GET"} // Daphne: overcome fetch blocked by COR policy remove access control
-): Promise<Response> => {
-  // default is a GET request
-  const apiPromise = fetch(uri, methods)
-    .then(
+  init?: RequestInit | undefined
+  ): Promise<Response> => {
+    // default is a GET request
+    const apiPromise = fetch(uri, init)
+  
+   .then(
       (res: Response): Response => {
         if (!res.ok) {
           throw Error(res.statusText);
