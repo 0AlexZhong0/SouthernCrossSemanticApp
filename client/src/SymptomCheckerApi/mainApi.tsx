@@ -13,11 +13,6 @@ export const getIds = (names: string[], isIssue: boolean): Promise<any> => {
   return flaskResponse
 }
 
-export const getSymptomIds = (symptoms: string[]): number[] => {
-  const symptomIds: number[] = [29, 144, 17]  // select the top three of the symptoms
-  return symptomIds
-}
-
 // token required session
 // deals with only one issue at the moment
 export const getIssueInfo = (issuedId: number): Promise<any> => {
@@ -50,5 +45,3 @@ export const diagnoseConditionsFromSymptoms = (symptoms: string[], sex: string, 
   
   return diagnosisRes
 }
-
-
