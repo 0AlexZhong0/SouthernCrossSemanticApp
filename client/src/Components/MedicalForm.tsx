@@ -1,7 +1,13 @@
 import * as React from "react";
+import Card from "@material-ui/core/Card";
+import CardContent from "@material-ui/core/CardContent";
 import CustomButton from "Components/Helpers/CustomButton";
 import CustomCheckBox from "Components/Helpers/CustomCheckBox";
 import { diagnoseConditionsFromSymptoms, getIssueId, getIssueInfo } from "SymptomCheckerApi/mainApi"
+import FormControl from "@material-ui/core/FormControl";
+import MenuItem from "@material-ui/core/MenuItem";
+import Select from "@material-ui/core/Select";
+import TextField from "@material-ui/core/TextField";
 
 interface IIssue {
   Issue: { Accuracy: number, ID: number, Name: string }
@@ -50,6 +56,130 @@ const MedicalForm = (): JSX.Element => {
 
   return (
     <React.Fragment>
+         <Card className = "userdetails">
+          <CardContent>
+             <h3>
+                 Add member      
+             </h3>
+
+             <div>
+                 First name {" "} 
+                 <TextField/>
+                 {" "}
+                 Surname {" "} 
+                 <TextField/>   
+             </div>
+
+             <br></br>
+
+             <div>
+                 DOB {" "}  
+                <FormControl>
+                    <Select>
+                        <MenuItem value={0}>0</MenuItem>
+                        <MenuItem value={1}>1</MenuItem>
+                        <MenuItem value={2}>2</MenuItem>
+                        </Select>
+                </FormControl>
+                {" "}
+                <FormControl>
+                    <Select>
+                        <MenuItem value={0}>0</MenuItem>
+                        <MenuItem value={1}>1</MenuItem>
+                        <MenuItem value={2}>2</MenuItem>
+                        <MenuItem value={3}>3</MenuItem>
+                        <MenuItem value={4}>4</MenuItem>
+                        <MenuItem value={5}>5</MenuItem>
+                        <MenuItem value={6}>6</MenuItem>
+                        <MenuItem value={7}>7</MenuItem>
+                        <MenuItem value={8}>8</MenuItem>
+                        <MenuItem value={9}>9</MenuItem>
+                        </Select>
+                </FormControl>
+                 {" "}
+                 dd
+                 {" "}
+                 <FormControl>
+                    <Select>
+                        <MenuItem value={0}>1</MenuItem>
+                        <MenuItem value={1}>2</MenuItem>
+                        <MenuItem value={2}>3</MenuItem>
+                        <MenuItem value={3}>4</MenuItem>
+                        <MenuItem value={4}>5</MenuItem>
+                        <MenuItem value={5}>6</MenuItem>
+                        <MenuItem value={6}>7</MenuItem>
+                        <MenuItem value={7}>8</MenuItem>
+                        <MenuItem value={8}>9</MenuItem>
+                        <MenuItem value={9}>10</MenuItem>
+                        <MenuItem value={10}>11</MenuItem>
+                        <MenuItem value={11}>12</MenuItem>
+                        </Select>
+                </FormControl>
+                 {" "}
+                 mm
+                 {" "}
+                 <FormControl>
+                    <Select>
+                        <MenuItem value={0}>1</MenuItem>
+                        <MenuItem value={1}>2</MenuItem>
+                    </Select>
+                </FormControl>
+                {" "}
+                <FormControl>
+                    <Select>
+                        <MenuItem value={0}>1</MenuItem>
+                        <MenuItem value={1}>2</MenuItem>
+                        <MenuItem value={2}>3</MenuItem>
+                        <MenuItem value={3}>4</MenuItem>
+                        <MenuItem value={4}>5</MenuItem>
+                        <MenuItem value={5}>6</MenuItem>
+                        <MenuItem value={6}>7</MenuItem>
+                        <MenuItem value={7}>8</MenuItem>
+                        <MenuItem value={8}>9</MenuItem>
+                        </Select>
+                </FormControl>
+                {" "}
+                <FormControl>
+                    <Select>
+                        <MenuItem value={0}>1</MenuItem>
+                        <MenuItem value={1}>2</MenuItem>
+                        <MenuItem value={2}>3</MenuItem>
+                        <MenuItem value={3}>4</MenuItem>
+                        <MenuItem value={4}>5</MenuItem>
+                        <MenuItem value={5}>6</MenuItem>
+                        <MenuItem value={6}>7</MenuItem>
+                        <MenuItem value={7}>8</MenuItem>
+                        <MenuItem value={8}>9</MenuItem>
+                        </Select>
+                </FormControl>
+                {" "}
+                <FormControl>
+                    <Select>
+                        <MenuItem value={0}>1</MenuItem>
+                        <MenuItem value={1}>2</MenuItem>
+                        <MenuItem value={2}>3</MenuItem>
+                        <MenuItem value={3}>4</MenuItem>
+                        <MenuItem value={4}>5</MenuItem>
+                        <MenuItem value={5}>6</MenuItem>
+                        <MenuItem value={6}>7</MenuItem>
+                        <MenuItem value={7}>8</MenuItem>
+                        <MenuItem value={8}>9</MenuItem>
+                        </Select>
+                </FormControl>
+                 {" "}
+             </div>
+             
+             <br></br>
+
+             <div>
+                 Biological sex
+                 {" "}
+                 <CustomCheckBox text="Male" />
+                 <CustomCheckBox text="Female" />
+             </div>
+
+        </CardContent>
+      </Card>
       <div>
         <CustomCheckBox text="Heart Attack" />
         <div>
