@@ -2,7 +2,11 @@ import pandas as pd
 from flask import Flask, request
 import json
 
+# data processing helper functions
 from medic_api import get_ids, issues_df, symptoms_df
+
+# environment variables
+from config_module import MOBILE_DEV_MODE, MY_IP_ADDRESS, DEBUG_MODE
 
 app = Flask(__name__)
 
@@ -28,4 +32,6 @@ def index():
 	return "Index Page"
 
 if __name__ == "__main__":
-	app.run(debug=True, port=8080)
+	# set default running on localhost
+	host_address = MY_IP_ADDRESS if MOBILE_DEV_MODE else None
+	app.run(debug=DEBUG_MODE, host=host_address, port=8080)
