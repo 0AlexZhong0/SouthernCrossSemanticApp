@@ -28,7 +28,7 @@ const MedicalForm = (): JSX.Element => {
 
       const possibleSyms: string[] = res.PossibleSymptoms.split(",")
       possibleSyms.forEach((symptom: string, index: number): void => {
-        symptomsCheckBoxes.push(<CustomCheckBox text={symptom} key={symptom + `${index}`} value = ""/>)
+        symptomsCheckBoxes.push(<CustomCheckBox text={symptom} key={symptom + `${index}`} setValue = {setValue}/>)
       })
       setSymptomsCheckBoxes(symptomsCheckBoxes)
       setsymptomsArray(possibleSyms)
@@ -39,14 +39,14 @@ const MedicalForm = (): JSX.Element => {
 
  const populateConditions = (): void => {
     const conditions: JSX.Element[] = []
-    console.log({gender});
-    console.log(year);
-    const diagnoseResult: Promise<any> = diagnoseConditionsFromSymptoms(symptomsArray, "male", year)
+    console.log("value",{value});
+    console.log("year",year);
+    const diagnoseResult: Promise<any> = diagnoseConditionsFromSymptoms(symptomsArray, value, year)
     // populate the potential related issues and display more checkbox onto the page            
     diagnoseResult.then((result: IResult[]): void => {
       result.forEach((issue: IIssue, index: number): void => {
         const IssueName: string = issue.Issue.Name
-        conditions.push(<CustomCheckBox text={IssueName} key={IssueName + `${index}`} value = ""/>)
+        conditions.push(<CustomCheckBox text={IssueName} key={IssueName + `${index}`} setValue = {setValue}/>)
       })
       setConditionsCheckBoxes(conditions)
       setSymptomsCheckBoxes([])
@@ -60,7 +60,7 @@ const MedicalForm = (): JSX.Element => {
   const [month, setMonth] = React.useState('');  
   const [year, setYear] = React.useState('');
 
-  const [gender, setGender] = React.useState('');
+  const [value, setValue] = React.useState('');
 
   const handledateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setDate(event.target.value);
@@ -76,11 +76,7 @@ const MedicalForm = (): JSX.Element => {
   };
 
 
-  console.log("parent",{gender})
-
- 
-  
-return (
+  return (
     <React.Fragment>
          <Card className = "userdetails">
           <CardContent>
@@ -114,15 +110,15 @@ return (
              <div>
                  Biological sex
                  {" "}
-                 <CustomCheckBox text="Male" value = {gender}/>
-                 <CustomCheckBox text="Female" value = {setGender}/>
+                 <CustomCheckBox text="Male" setValue = {setValue}/>
+                 <CustomCheckBox text="Female" setValue = {setValue}/>
                  
              </div>
 
         </CardContent>
       </Card>
       <div>
-        <CustomCheckBox text="Heart Attack" value = ""/>
+        <CustomCheckBox text="Heart Attack" setValue = {setValue}/>
         <div>
           <CustomButton loadComponent={() => populateSymptoms("Heart Attack")} title="Get Symptoms" />
           {symptomsCheckBoxes}
@@ -136,7 +132,7 @@ return (
       <br />
 
       <div>
-        <CustomCheckBox text="Obstruction of a pulmonary artery" value = ""/>
+        <CustomCheckBox text="Obstruction of a pulmonary artery" setValue = {setValue}/>
         <div>
           <CustomButton loadComponent={() => populateSymptoms("Obstruction of a pulmonary artery")} title="Get Symptoms" />
           <br />
@@ -149,7 +145,7 @@ return (
       <br />
 
       <div>
-        <CustomCheckBox text="Coronary heart disease" value = ""/>
+        <CustomCheckBox text="Coronary heart disease" setValue = {setValue}/>
         <div>
           <CustomButton loadComponent={() => populateSymptoms("Coronary heart disease")} title="Get Symptoms" />
           <br />
