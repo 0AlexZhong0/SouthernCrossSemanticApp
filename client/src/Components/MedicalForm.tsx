@@ -8,6 +8,7 @@ import {
   IIdResponse
 } from "SymptomCheckerApi/mainApi"
 
+// To keep the code clean, think about how to separate the symptoms and the condtions logic
 interface IIssue {
   Issue: { Accuracy: number; ID: number; Name: string }
 }
@@ -16,26 +17,59 @@ interface IResult extends IIssue {
   index: number
 }
 
-const generateRandomInt = (min: number, max: number): number => {
-  const minimum: number = Math.floor(min)
-  const maximum: number = Math.ceil(max)
-  const randomInt: number =
-    Math.floor(Math.random() * (maximum - minimum + 1)) + minimum
-  return randomInt
+interface ISymptomsAndConditions {
+  conditionName: string
+  symptomsCheckBoxes: JSX.Element[]
 }
 
+// can include these texts in a separate file
+const ALL_APPLIES: string = "tick all that applies"
+const initialConfirmConditionDescription: string = `Do you have any of the conditions below, ${ALL_APPLIES}`
+const symptomsConfirmDescription: string = `Have you experienced any of these symptoms for the respective condition in the past 6 months, ${ALL_APPLIES}`
+const relatedConditionDescription: string = `Here are some of the related conditions we have found, do you have any, ${ALL_APPLIES}`
+
 // store the issues somewhere
-// populate a random issue each time the page is refreshed
 const issues: string[] = [
   "Heart attack",
   "Hernia",
   "Abortion",
   "Urinary tract infection"
 ]
-const randomNum: number = generateRandomInt(0, issues.length - 1)
-const issue: string = issues[randomNum]
+
+// can include the helper functions in a separate file
+// same with the ones defined inside MedicalForm
+// helper functions
+const formatSymptomsAndGetArray = (possibleSymptoms: string): string[] => {
+  // very inefficent way of sorting the words
+  // have something like "unconciousness, short" as one symptom in the list of symptoms
+  // want to keep as a whole, instead of splitting it to "unconciousness" and " short" separately
+  const possibleSyms: string[] = []
+  const initSyms: string = possibleSymptoms.replace(", ", ";")
+  const initSymsArr: string[] = initSyms.split(",")
+  initSymsArr.forEach((sym: string): void => {
+    if (sym.includes(";")) sym = sym.replace(";", ", ")
+    possibleSyms.push(sym)
+  })
+  return possibleSyms
+}
+
+// Generate an integer within the range inclusively
+// const generateRandomInt = (min: number, max: number): number => {
+//   const minimum: number = Math.floor(min)
+//   const maximum: number = Math.ceil(max)
+//   const randomInt: number =
+//     Math.floor(Math.random() * (maximum - minimum + 1)) + minimum
+//   return randomInt
+// }
+
+// populate a random issue each time the page is refreshed
+// const randomNum: number = generateRandomInt(0, issues.length - 1)
+// const issue: string = issues[randomNum]
 
 const MedicalForm = (): JSX.Element => {
+  const [symptomsAndConditions, setSymptomsAndConditions] = React.useState(
+    [] as JSX.Element[]
+  )
   const [symptomsCheckBoxes, setSymptomsCheckBoxes] = React.useState(
     [] as JSX.Element[]
   )
@@ -69,43 +103,67 @@ const MedicalForm = (): JSX.Element => {
       setsymptomsArray(symptomsArray)
     }
   }
+  
+  const populateSymptoms = (conditions: string[]): void => {
+    // handling when no condition is selected
+    if (conditions.length === 0) {
+      setSymptomsCheckBoxes([])
+      setSymptomsAndConditions([])
+      return
+    }
 
-  const populateSymptoms = (condition: string[]): void => {
-    // the naming conventions inside this function confuses me
+    // dealing with mutiple issue_ids
     const isIssue: boolean = true
-    const flaskResponse: Promise<any> = getIds(condition, isIssue)
-    const symptomsCheckBoxes: JSX.Element[] = []
+    const flaskResponse: Promise<any> = getIds(conditions, isIssue)
+    const symptomsOfAllIssues: Promise<JSX.Element>[] = []
     flaskResponse.then((res: IIdResponse) => {
       const issue_ids: number[] = res.issue_ids! // non-null assertion
-      const issueId: number = issue_ids[0] // currently only getting one issue at a time
 
-      getIssueInfo(issueId).then((res: { PossibleSymptoms: string }) => {
-        // very inefficent way of sorting the words
-        // have something like "unconciousness, short" as one symptom in the list of symptoms
-        // want to keep as a whole, instead of splitting it to "unconciousness" and " short" separately
-        const initSyms: string = res.PossibleSymptoms.replace(", ", ";")
-        const initSymsArr: string[] = initSyms.split(",")
-        const possibleSyms: string[] = []
-        initSymsArr.forEach((sym: string): void => {
-          if (sym.includes(";")) sym = sym.replace(";", ", ")
-          possibleSyms.push(sym)
-        })
+      issue_ids.forEach((issueId: number, index: number) => {
+        /**
+         * Aggregate the promise returned by getIssueInfo into an array
+         * The promise returns a JSX.Element which has the name of the 
+         * condition and the related symptoms
+         */
+        const symptomsInfo: Promise<JSX.Element> = getIssueInfo(issueId).then(
+          (res: { PossibleSymptoms: string }) => {
+            const possibleSyms: string[] = formatSymptomsAndGetArray(
+              res.PossibleSymptoms
+            )
 
-        possibleSyms.forEach((symptom: string, index: number): void => {
-          symptomsCheckBoxes.push(
-            <CustomCheckBox
-              isCondition={false}
-              text={symptom}
-              key={symptom + `${index}`}
-              handleChecked={handleChecked}
-              handleUnchecked={handleUnchecked}
-            />
-          )
-        })
+            const symptomsCheckBoxes: JSX.Element[] = []
+            possibleSyms.forEach((symptom: string, index: number): void => {
+              const symptomsCheckBox: JSX.Element = (
+                <CustomCheckBox
+                  isCondition={false}
+                  text={symptom}
+                  key={symptom + `${index}`}
+                  handleChecked={handleChecked}
+                  handleUnchecked={handleUnchecked}
+                />
+              )
+              symptomsCheckBoxes.push(symptomsCheckBox)
+            })
 
-        setSymptomsCheckBoxes(symptomsCheckBoxes)
-        setConditionsCheckBoxes([])
-      }).catch((err: Response) => setSymptomsCheckBoxes([]))  // handling no condition is selected
+            const conditionName: string = conditions[index]
+            const symptomsAndConditionName: JSX.Element = (
+              <div key={conditionName}>
+                {conditionName}
+                <br />
+                {symptomsCheckBoxes}
+              </div>
+            )
+
+            return symptomsAndConditionName
+          }
+        )
+        symptomsOfAllIssues.push(symptomsInfo)
+      })
+
+      // A single promise that contains the iterable values of the array of promises
+      Promise.all(symptomsOfAllIssues).then((symsAndConds: JSX.Element[]): void =>
+        setSymptomsAndConditions(symsAndConds)        
+      )
     })
   }
 
@@ -115,8 +173,8 @@ const MedicalForm = (): JSX.Element => {
     // the sex and the year of birth
     const sex: string = "male"
     const yearOfBirth: number = 1993
+    console.log(`Array of symptoms is ${symptomsArray}`)
     const diagnoseResult: Promise<any> = diagnoseConditionsFromSymptoms(
-      // the argument parameter that I passed in here is key, this should be all checked values
       symptomsArray,
       sex,
       yearOfBirth
@@ -137,27 +195,54 @@ const MedicalForm = (): JSX.Element => {
         )
       })
       setConditionsCheckBoxes(conditionsCheckBoxes)
+      setsymptomsArray([])
       setSymptomsCheckBoxes([])
     })
   }
 
+  const getInitialIssues = (): JSX.Element[] => {
+    const initIssues: JSX.Element[] = []
+    issues.forEach((issue: string, index: number) => {
+      initIssues.push(
+        <div key={issue + `${index}`}>
+          <CustomCheckBox
+            isCondition={true}
+            text={issue}
+            handleChecked={handleChecked}
+            handleUnchecked={handleUnchecked}
+          />
+          <br />
+        </div>
+      )
+    })
+    return initIssues
+  }
+
   return (
     <React.Fragment>
-      <CustomCheckBox
+      {/** A checkbox for the initial condition */}
+      {/* <CustomCheckBox
         isCondition={true}
         text={issue}
         handleChecked={handleChecked}
         handleUnchecked={handleUnchecked}
       />
-      <br />
+      <br /> */}
+      <h2>{initialConfirmConditionDescription}</h2>
+      {getInitialIssues()}
       <CustomButton
         loadComponent={() => populateSymptoms(conditionsArray)}
         title="Get Symptoms"
       />
       <br />
       {symptomsCheckBoxes}
+      {symptomsAndConditions.length > 0 ? <h2>{symptomsConfirmDescription}</h2> : null}
+      {symptomsAndConditions}
       <br />
-      <CustomButton loadComponent={populateConditions} title="Get Conditions" />
+      <CustomButton
+        loadComponent={populateConditions}
+        title="Get Related Conditions"
+      />
       <br />
       {conditionsCheckBoxes}
     </React.Fragment>
