@@ -32,7 +32,7 @@ server/flask/VENV
 server/flask/ENV
 server/flask/venv
 server/flask/.venv
-server/flask/.env
+# server/flask/.env
 
 # code
 .vscode
