@@ -8,7 +8,7 @@ interface IProps {
 }
 
 const CustomButton = (props: IProps): JSX.Element => {
-    return <Button onClick={props.loadComponent}  >{props.title}</Button>
+    return <Button variant="contained"  onClick={props.loadComponent}  >{props.title}</Button>
 }
 
 export default CustomButton

@@ -4,7 +4,9 @@ import CardContent from "@material-ui/core/CardContent";
 import CustomButton from "Components/Helpers/CustomButton";
 import CustomCheckBox from "Components/Helpers/CustomCheckBox";
 import { diagnoseConditionsFromSymptoms, getIssueId, getIssueInfo } from "SymptomCheckerApi/mainApi"
+import logo from "logo.jpg"
 import TextField from "@material-ui/core/TextField";
+import "./MedicalForm.css"
 
 interface IIssue {
   Issue: { Accuracy: number, ID: number, Name: string }
@@ -39,14 +41,17 @@ const MedicalForm = (): JSX.Element => {
 
  const populateConditions = (): void => {
     const conditions: JSX.Element[] = []
-    console.log("value",{value});
-    console.log("year",year);
+    // console.log("value",{value});
+    // console.log("year",year);
     const diagnoseResult: Promise<any> = diagnoseConditionsFromSymptoms(symptomsArray, value, year)
     // populate the potential related issues and display more checkbox onto the page            
     diagnoseResult.then((result: IResult[]): void => {
       result.forEach((issue: IIssue, index: number): void => {
         const IssueName: string = issue.Issue.Name
-        conditions.push(<CustomCheckBox text={IssueName} key={IssueName + `${index}`} setValue = {setValue}/>)
+        // IF STATEMENT HERE TO REMOVE DUPLICATE
+        conditions.push(<CustomCheckBox text={IssueName} key={IssueName + `${index}`} setValue = {setSelectedConditions}/>)
+        //checkedconditions.push(selectedConditions);
+       
       })
       setConditionsCheckBoxes(conditions)
       setSymptomsCheckBoxes([])
@@ -55,12 +60,13 @@ const MedicalForm = (): JSX.Element => {
 
   // D: changed select drop down to text field as cumbersome with 6 drop downs but can revert later 
   //    need to implement error mechanisms later if time permits
- 
+  
   const [date, setDate] = React.useState('');  
   const [month, setMonth] = React.useState('');  
   const [year, setYear] = React.useState('');
-
+  // D: At the moment checkboxes apart from gender and conditions have setvalue passed in as dont need the value yet
   const [value, setValue] = React.useState('');
+  const [selectedConditions, setSelectedConditions] = React.useState('');
 
   const handledateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setDate(event.target.value);
@@ -70,21 +76,29 @@ const MedicalForm = (): JSX.Element => {
     setMonth(event.target.value);
   };
 
-  // Need year for diagnoseConditionsFromSymptoms function
+  // D: Need year for diagnoseConditionsFromSymptoms function
   const handleyearChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setYear(event.target.value);
   };
 
+  // D: Hard Coded list by beginning with heart attack already present
+  //const checkedconditions: string[] = [];
+  //checkedconditions.push("Heart Attack");
+  
+  //console.log({checkedconditions});
+
 
   return (
     <React.Fragment>
+         <div className = "header"><img className = "headerlogo" src = {logo}/></div>
+         <br></br>
          <Card className = "userdetails">
           <CardContent>
-             <h3>
+             <h3 className = "addmember">
                  Add member      
              </h3>
 
-             <div>
+             <div className = "addname">
                  First name {" "} 
                  <TextField/>
                  {" "}
@@ -93,9 +107,11 @@ const MedicalForm = (): JSX.Element => {
              </div>
 
              <br></br>
+             
             
             <div>
-            DOB {" "} 
+             
+            <div className = "adddob">DOB</div> {" "} 
             
             <TextField id="outlined-basic" label="d" variant="outlined" onChange = {handledateChange} value = {date} />
             {" "} 
@@ -108,7 +124,7 @@ const MedicalForm = (): JSX.Element => {
              <br></br>
 
              <div>
-                 Biological sex
+                 <div className = "addsex">Biological sex</div>
                  {" "}
                  <CustomCheckBox text="Male" setValue = {setValue}/>
                  <CustomCheckBox text="Female" setValue = {setValue}/>
@@ -149,6 +165,7 @@ const MedicalForm = (): JSX.Element => {
         <div>
           <CustomButton loadComponent={() => populateSymptoms("Coronary heart disease")} title="Get Symptoms" />
           <br />
+          
           <CustomButton loadComponent={populateConditions} title="Get Conditions" />
 
         </div>

@@ -20,7 +20,7 @@ const CustomCheckBox = (props: { text: string, setValue:any}): JSX.Element => {
     // Populate checkboxes with all the possible conditions
     <FormControlLabel
       control={
-        <Checkbox checked={isChecked} onChange={tickOrUntick} />    
+        <Checkbox checked={isChecked} onChange={tickOrUntick} style ={{color: "#008bce", }}/>    
       }
       label={props.text}
     />

@@ -1,0 +1,23 @@
+.addmember{
+    font-family: Arial, Helvetica, sans-serif;
+    
+}
+
+.addname{
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.adddob{
+    font-family: Arial, Helvetica, sans-serif;
+    display: inline-block;
+}
+
+.addsex{
+    font-family: Arial, Helvetica, sans-serif;
+    display: inline-block;
+}
+
+.headerlogo{
+    width: 100%;
+}
+
