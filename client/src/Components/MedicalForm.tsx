@@ -26,7 +26,6 @@ interface ISymptomsAndConditions {
 const ALL_APPLIES: string = "tick all that applies"
 const initialConfirmConditionDescription: string = `Do you have any of the conditions below, ${ALL_APPLIES}`
 const symptomsConfirmDescription: string = `Have you experienced any of these symptoms for the respective condition in the past 6 months, ${ALL_APPLIES}`
-const relatedConditionDescription: string = `Here are some of the related conditions we have found, do you have any, ${ALL_APPLIES}`
 
 // store the issues somewhere
 const issues: string[] = [
@@ -53,20 +52,42 @@ const formatSymptomsAndGetArray = (possibleSymptoms: string): string[] => {
   return possibleSyms
 }
 
-// Generate an integer within the range inclusively
-// const generateRandomInt = (min: number, max: number): number => {
-//   const minimum: number = Math.floor(min)
-//   const maximum: number = Math.ceil(max)
-//   const randomInt: number =
-//     Math.floor(Math.random() * (maximum - minimum + 1)) + minimum
-//   return randomInt
-// }
+// These two components are very similar, can group them into one function
+const ConditionNameAndRelatedSymptoms = (props: {
+  conditionName: string
+  symptomsCheckBoxes: JSX.Element[]
+}): JSX.Element => {
+  const { conditionName, symptomsCheckBoxes } = props
+  const description: string = `Symptoms of ${conditionName}`
+  return (
+    <div>
+      <strong>{description}</strong>
+      <br />
+      {symptomsCheckBoxes}
+    </div>
+  )
+}
 
-// populate a random issue each time the page is refreshed
-// const randomNum: number = generateRandomInt(0, issues.length - 1)
-// const issue: string = issues[randomNum]
+const ConditionNameAndRelatedConditions = (props: {
+  conditionName: string
+  conditionCheckBoxes: JSX.Element[]
+}): JSX.Element => {
+  const { conditionName, conditionCheckBoxes } = props
+  const description: string = `Related conditions below, based on your symptoms of ${conditionName}`
+  return (
+    <div>
+      <strong>{description}</strong>
+      <br />
+      {conditionCheckBoxes}
+    </div>
+  )
+}
 
 const MedicalForm = (): JSX.Element => {
+  const [
+    symptomsWithConditionAsKey,
+    setsymptomsWithConditionAsKey
+  ] = React.useState({} as { [key: string]: string[] })
   const [symptomsAndConditions, setSymptomsAndConditions] = React.useState(
     [] as JSX.Element[]
   )
@@ -84,26 +105,48 @@ const MedicalForm = (): JSX.Element => {
     array.splice(toRemoveIndex, 1) // in-place function to remove one element only
   }
 
-  const handleChecked = (val: string, isCondition: boolean): void => {
+  const handleChecked = (
+    val: string,
+    isCondition: boolean,
+    conditionName?: string
+  ): void => {
     if (isCondition) {
       conditionsArray.push(val)
       setConditionsArray(conditionsArray)
     } else {
       symptomsArray.push(val)
       setsymptomsArray(symptomsArray)
+      // assign the key an array with one symptom first, if the key is not in the object initially
+      if (!(conditionName! in symptomsWithConditionAsKey))
+        symptomsWithConditionAsKey[conditionName!] = [val]
+      else symptomsWithConditionAsKey[conditionName!].push(val)
+      setsymptomsWithConditionAsKey(symptomsWithConditionAsKey)
     }
   }
 
-  const handleUnchecked = (val: string, isCondition: boolean): void => {
+  const handleUnchecked = (
+    val: string,
+    isCondition: boolean,
+    conditionName?: string
+  ): void => {
     if (isCondition) {
       removeOneElementFromArray(conditionsArray, val)
       setConditionsArray(conditionsArray)
     } else {
       removeOneElementFromArray(symptomsArray, val)
       setsymptomsArray(symptomsArray)
+      // last symptom left in the array, just delete the key in the object
+      if (symptomsWithConditionAsKey[conditionName!].length === 1)
+        delete symptomsWithConditionAsKey[conditionName!]
+      else
+        removeOneElementFromArray(
+          symptomsWithConditionAsKey[conditionName!],
+          val
+        )
+      setsymptomsWithConditionAsKey(symptomsWithConditionAsKey)
     }
   }
-  
+
   const populateSymptoms = (conditions: string[]): void => {
     // handling when no condition is selected
     if (conditions.length === 0) {
@@ -122,7 +165,7 @@ const MedicalForm = (): JSX.Element => {
       issue_ids.forEach((issueId: number, index: number) => {
         /**
          * Aggregate the promise returned by getIssueInfo into an array
-         * The promise returns a JSX.Element which has the name of the 
+         * The promise returns a JSX.Element which has the name of the
          * condition and the related symptoms
          */
         const symptomsInfo: Promise<JSX.Element> = getIssueInfo(issueId).then(
@@ -132,6 +175,8 @@ const MedicalForm = (): JSX.Element => {
             )
 
             const symptomsCheckBoxes: JSX.Element[] = []
+            const conditionName: string = conditions[index]
+
             possibleSyms.forEach((symptom: string, index: number): void => {
               const symptomsCheckBox: JSX.Element = (
                 <CustomCheckBox
@@ -140,20 +185,19 @@ const MedicalForm = (): JSX.Element => {
                   key={symptom + `${index}`}
                   handleChecked={handleChecked}
                   handleUnchecked={handleUnchecked}
+                  conditionName={conditionName}
                 />
               )
               symptomsCheckBoxes.push(symptomsCheckBox)
             })
 
-            const conditionName: string = conditions[index]
             const symptomsAndConditionName: JSX.Element = (
-              <div key={conditionName}>
-                {conditionName}
-                <br />
-                {symptomsCheckBoxes}
-              </div>
+              <ConditionNameAndRelatedSymptoms
+                key={conditionName + `${index}`}
+                conditionName={conditionName}
+                symptomsCheckBoxes={symptomsCheckBoxes}
+              />
             )
-
             return symptomsAndConditionName
           }
         )
@@ -161,43 +205,64 @@ const MedicalForm = (): JSX.Element => {
       })
 
       // A single promise that contains the iterable values of the array of promises
-      Promise.all(symptomsOfAllIssues).then((symsAndConds: JSX.Element[]): void =>
-        setSymptomsAndConditions(symsAndConds)        
+      Promise.all(
+        symptomsOfAllIssues
+      ).then((symsAndConds: JSX.Element[]): void =>
+        setSymptomsAndConditions(symsAndConds)
       )
     })
   }
 
   const populateConditions = (): void => {
-    const conditionsCheckBoxes: JSX.Element[] = []
     // need the user to type in their personal information first
     // the sex and the year of birth
     const sex: string = "male"
     const yearOfBirth: number = 1993
-    console.log(`Array of symptoms is ${symptomsArray}`)
-    const diagnoseResult: Promise<any> = diagnoseConditionsFromSymptoms(
-      symptomsArray,
-      sex,
-      yearOfBirth
-    )
-    // populate the potential related issues and display more checkbox onto the page
-    diagnoseResult.then((res: IResult[]): void => {
-      // select the top three issue
-      res.slice(0, 3).forEach((issue: IIssue, index: number): void => {
-        const IssueName: string = issue.Issue.Name
-        conditionsCheckBoxes.push(
-          <CustomCheckBox
-            isCondition={true}
-            text={IssueName}
-            key={IssueName + `${index}`}
-            handleChecked={handleChecked}
-            handleUnchecked={handleUnchecked}
-          />
+    const relatedConditionsFromSymptoms: Promise<JSX.Element>[] = []
+    Object.keys(symptomsWithConditionAsKey).forEach(
+      (selectedCondition: string) => {
+        const diagnoseResult: Promise<IResult[]> = diagnoseConditionsFromSymptoms(
+          symptomsWithConditionAsKey[selectedCondition],
+          sex,
+          yearOfBirth
         )
-      })
-      setConditionsCheckBoxes(conditionsCheckBoxes)
-      setsymptomsArray([])
-      setSymptomsCheckBoxes([])
-    })
+
+        const relatedConditionPromise: Promise<JSX.Element> = diagnoseResult.then(
+          (res: IResult[]): JSX.Element => {
+            const conditionsCheckBoxes: JSX.Element[] = []
+            // select the top three issue
+            res.slice(0, 3).forEach((issue: IIssue, index: number): void => {
+              const IssueName: string = issue.Issue.Name
+              conditionsCheckBoxes.push(
+                <CustomCheckBox
+                  isCondition={true}
+                  text={IssueName}
+                  key={IssueName + `${index}`}
+                  handleChecked={handleChecked}
+                  handleUnchecked={handleUnchecked}
+                />
+              )
+            })
+            const relatedCondition: JSX.Element = (
+              <ConditionNameAndRelatedConditions
+                key={selectedCondition}
+                conditionName={selectedCondition}
+                conditionCheckBoxes={conditionsCheckBoxes}
+              />
+            )
+            return relatedCondition
+          }
+        )
+        relatedConditionsFromSymptoms.push(relatedConditionPromise)
+      }
+    )
+
+    Promise.all(relatedConditionsFromSymptoms).then(
+      (relatedConditions: JSX.Element[]): void => {
+        setConditionsCheckBoxes(relatedConditions)
+        setsymptomsArray([])
+      }
+    )
   }
 
   const getInitialIssues = (): JSX.Element[] => {
@@ -220,14 +285,6 @@ const MedicalForm = (): JSX.Element => {
 
   return (
     <React.Fragment>
-      {/** A checkbox for the initial condition */}
-      {/* <CustomCheckBox
-        isCondition={true}
-        text={issue}
-        handleChecked={handleChecked}
-        handleUnchecked={handleUnchecked}
-      />
-      <br /> */}
       <h2>{initialConfirmConditionDescription}</h2>
       {getInitialIssues()}
       <CustomButton
@@ -236,7 +293,9 @@ const MedicalForm = (): JSX.Element => {
       />
       <br />
       {symptomsCheckBoxes}
-      {symptomsAndConditions.length > 0 ? <h2>{symptomsConfirmDescription}</h2> : null}
+      {symptomsAndConditions.length > 0 ? (
+        <h2>{symptomsConfirmDescription}</h2>
+      ) : null}
       {symptomsAndConditions}
       <br />
       <CustomButton
