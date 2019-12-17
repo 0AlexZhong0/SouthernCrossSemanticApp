@@ -8,7 +8,7 @@ interface IProps {
 }
 
 const CustomButton = (props: IProps): JSX.Element => {
-    return <Button variant="contained"  onClick={props.loadComponent}  >{props.title}</Button>
+    return <Button variant="contained" style ={{backgroundColor: "#008bce", color:"white",}} onClick={props.loadComponent}  >{props.title}</Button>
 }
 
 export default CustomButton
