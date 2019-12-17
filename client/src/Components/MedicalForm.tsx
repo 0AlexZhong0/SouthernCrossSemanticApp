@@ -25,7 +25,8 @@ interface ISymptomsAndConditions {
 // can include these texts in a separate file
 const ALL_APPLIES: string = "tick all that applies"
 const initialConfirmConditionDescription: string = `Do you have any of the conditions below, ${ALL_APPLIES}`
-const symptomsConfirmDescription: string = `Have you experienced any of these symptoms for the respective condition in the past 6 months, ${ALL_APPLIES}`
+const symptomsConfirmDescription: string = `Have you experienced these symptoms for the respective condition in the past 6 months, ${ALL_APPLIES}`
+const relatedConditionsConfirmDescription: string = `Do you have these related conditions , ${ALL_APPLIES}`
 
 // store the issues somewhere
 const issues: string[] = [
@@ -283,6 +284,7 @@ const MedicalForm = (): JSX.Element => {
     return initIssues
   }
 
+  // can refactor the conditional rendering below
   return (
     <React.Fragment>
       <h2>{initialConfirmConditionDescription}</h2>
@@ -303,6 +305,9 @@ const MedicalForm = (): JSX.Element => {
         title="Get Related Conditions"
       />
       <br />
+      {conditionsCheckBoxes.length > 0 ? (
+        <h2>{relatedConditionsConfirmDescription}</h2>
+      ) : null}
       {conditionsCheckBoxes}
     </React.Fragment>
   )
