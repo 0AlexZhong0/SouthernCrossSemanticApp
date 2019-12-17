@@ -48,9 +48,7 @@ const MedicalForm = (): JSX.Element => {
     diagnoseResult.then((result: IResult[]): void => {
       result.forEach((issue: IIssue, index: number): void => {
         const IssueName: string = issue.Issue.Name
-        // IF STATEMENT HERE TO REMOVE DUPLICATE
         conditions.push(<CustomCheckBox text={IssueName} key={IssueName + `${index}`} setValue = {setSelectedConditions}/>)
-        //checkedconditions.push(selectedConditions);
        
       })
       setConditionsCheckBoxes(conditions)
@@ -81,13 +79,7 @@ const MedicalForm = (): JSX.Element => {
     setYear(event.target.value);
   };
 
-  // D: Hard Coded list by beginning with heart attack already present
-  //const checkedconditions: string[] = [];
-  //checkedconditions.push("Heart Attack");
   
-  //console.log({checkedconditions});
-
-
   return (
     <React.Fragment>
          <div className = "header"><img className = "headerlogo" src = {logo}/></div>
