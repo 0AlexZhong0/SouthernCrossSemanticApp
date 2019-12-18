@@ -129,9 +129,11 @@ const MedicalForm = (): JSX.Element => {
         <CustomCheckBox text="Heart Attack" setValue = {setValue}/>
         <div>
           <CustomButton loadComponent={() => populateSymptoms("Heart Attack")} title="Get Symptoms" />
+          <br></br>
           {symptomsCheckBoxes}
           <br />
           <CustomButton loadComponent={populateConditions} title="Get Conditions" />
+          <br></br>
           {conditionsCheckBoxes}
 
         </div>
@@ -143,7 +145,7 @@ const MedicalForm = (): JSX.Element => {
         <CustomCheckBox text="Obstruction of a pulmonary artery" setValue = {setValue}/>
         <div>
           <CustomButton loadComponent={() => populateSymptoms("Obstruction of a pulmonary artery")} title="Get Symptoms" />
-          <br />
+          <br /><br />
           <CustomButton loadComponent={populateConditions} title="Get Conditions" />
 
         </div>
@@ -156,8 +158,7 @@ const MedicalForm = (): JSX.Element => {
         <CustomCheckBox text="Coronary heart disease" setValue = {setValue}/>
         <div>
           <CustomButton loadComponent={() => populateSymptoms("Coronary heart disease")} title="Get Symptoms" />
-          <br />
-          
+          <br /><br />
           <CustomButton loadComponent={populateConditions} title="Get Conditions" />
 
         </div>
