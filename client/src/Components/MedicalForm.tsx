@@ -1,9 +1,15 @@
-import * as React from "react";
-import { Checkbox, FormControlLabel, Card, CardContent, TextField } from "@material-ui/core";
+import * as React from "react"
+import {
+  Checkbox,
+  FormControlLabel,
+  Card,
+  CardContent,
+  TextField
+} from "@material-ui/core"
 
 // Custom components
-import CustomButton from "Components/Helpers/CustomButton";
-import CustomCheckBox from "Components/Helpers/CustomCheckBox";
+import CustomButton from "Components/Helpers/CustomButton"
+import CustomCheckBox from "Components/Helpers/CustomCheckBox"
 
 // core api functions
 import {
@@ -86,7 +92,7 @@ const ConditionNameAndRelatedConditions = (props: {
   const description: string = `Related conditions below, based on your symptoms of ${conditionName}`
   return (
     <div>
-      <strong>{description}</strong>
+      <h3>{description}</h3>
       <br />
       {conditionCheckBoxes}
     </div>
@@ -100,39 +106,38 @@ const ConditionNameWithNoRelatedConditions = (props: {
   return <h3>{description}</h3>
 }
 
-const SexCheckBox = (props: { sex: string, onTick: () => void }): JSX.Element => {
-  const { sex, onTick } = props
-  return <FormControlLabel 
-    control={
-      <Checkbox checked={false} onChange={onTick} />
+const SexCheckBox = (props: { gender: string, onCheck: (gender: string) => void }): JSX.Element => {
+  const [checked, setChecked] = React.useState(false)
+  const { gender, onCheck } = props
+
+  const handleChecked = (): void => {
+    if (checked) {
+      onCheck("")
+      setChecked(false)
     }
-    label={sex}
-  />
+    else {
+      onCheck(gender)
+      setChecked(true)
+    }
+  }
+
+  return (
+    <FormControlLabel
+      control={<Checkbox checked={checked} onChange={handleChecked} />}
+      label={gender}
+    />
+  )
 }
 
 const MedicalForm = (): JSX.Element => {
   // Separate the DOB card into a separate component
-  // D: changed select drop down to text field as cumbersome with 6 drop downs but can revert later 
+  // D: changed select drop down to text field as cumbersome with 6 drop downs but can revert later
   // need to implement error mechanisms later if time permits
-  const [date, setDate] = React.useState('');  
-  const [month, setMonth] = React.useState('');  
-  const [year, setYear] = React.useState('');
+  const [date, setDate] = React.useState("")
+  const [month, setMonth] = React.useState("")
+  const [year, setYear] = React.useState("")
   // D: At the moment checkboxes apart from gender and conditions have setvalue passed in as dont need the value yet
-  const [value, setValue] = React.useState('');
-
-  const handledateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setDate(event.target.value);
-  };
-
-  const handlemonthChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setMonth(event.target.value);
-  };
-
-  // D: Need year for diagnoseConditionsFromSymptoms function
-  const handleyearChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setYear(event.target.value);
-  };
-
+  const [sex, setSex] = React.useState("")
   const [
     symptomsWithConditionAsKey,
     setsymptomsWithConditionAsKey
@@ -152,6 +157,23 @@ const MedicalForm = (): JSX.Element => {
   const removeOneElementFromArray = (array: any[], valToRemove: any): void => {
     const toRemoveIndex: number = array.indexOf(valToRemove)
     array.splice(toRemoveIndex, 1) // in-place function to remove one element only
+  }
+
+  const handledateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setDate(event.target.value)
+  }
+
+  const handlemonthChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setMonth(event.target.value)
+  }
+
+  // D: Need year for diagnoseConditionsFromSymptoms function
+  const handleyearChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setYear(event.target.value)
+  }
+
+  const handleOnSexChecked = (gender: string): void => {
+    setSex(gender)
   }
 
   const handleChecked = (
@@ -263,10 +285,6 @@ const MedicalForm = (): JSX.Element => {
   }
 
   const populateConditions = (): void => {
-    // need the user to type in their personal information first
-    // the sex and the year of birth
-    const sex: string = "male"
-    const yearOfBirth: number = 1993
     const relatedConditionsFromSymptoms: Promise<JSX.Element>[] = []
     const noDuplicateIssueNameChecker: string[] = []
     /**
@@ -278,7 +296,7 @@ const MedicalForm = (): JSX.Element => {
         const diagnoseResult: Promise<IResult[]> = diagnoseConditionsFromSymptoms(
           symptomsWithConditionAsKey[selectedCondition],
           sex,
-          yearOfBirth
+          year
         )
 
         const relatedConditionPromise: Promise<JSX.Element> = diagnoseResult.then(
@@ -289,7 +307,7 @@ const MedicalForm = (): JSX.Element => {
               const IssueName: string = issue.Issue.Name
               /**
                * only push in the condition if it is not duplicate
-               * checking: 
+               * checking:
                * 1. if the related condition has the same name as the condition
                * 2. if it is a already populated condition (a condition that is on the form)
                */
@@ -350,15 +368,13 @@ const MedicalForm = (): JSX.Element => {
     const initIssues: JSX.Element[] = []
     issues.forEach((issue: string, index: number) => {
       initIssues.push(
-        <div key={issue + `${index}`}>
-          <CustomCheckBox
-            isCondition={true}
-            text={issue}
-            handleChecked={handleChecked}
-            handleUnchecked={handleUnchecked}
-          />
-          <br />
-        </div>
+        <CustomCheckBox
+          key={issue + `${index}`}
+          isCondition={true}
+          text={issue}
+          handleChecked={handleChecked}
+          handleUnchecked={handleUnchecked}
+        />
       )
     })
     return initIssues
@@ -369,77 +385,104 @@ const MedicalForm = (): JSX.Element => {
   return (
     <React.Fragment>
       {/** Card Component Here */}
-      <div className = "header"><img className = "headerlogo" src = {logo}/></div>
-         <br></br>
-         <Card className = "userdetails">
-          <CardContent>
-             <h2 className = "addmember">
-                 Add member      
-             </h2>
-             <br/>
-             <div className = "addname">
-                 <div className = "addfirst">First name</div> 
-                 <div className = "fill"/>
-                 <TextField/>
-                 <div className = "fill"/>
-                 Surname <div className = "fill"/>
-                 <TextField/>   
-             </div>
-             <br />
-            <br />         
-            <div className = "adddmy">
-                <div className = "adddob">DOB</div> 
-                <div className = "fill"/>
-                {/** make this a cus */}
-                <TextField id="outlined-basic" label="day" variant="outlined" onChange = {handledateChange} value = {date} />
-                {" "} 
-                <TextField id="outlined-basic" label="month" variant="outlined" onChange = {handlemonthChange} value = {month}/>
-                {" "} 
-                <TextField id="outlined-basic" label="year" variant="outlined" onChange = {handleyearChange} value = {year}/>
-            </div>            
-             <br />
-             <div className = "addgender">
-                 <div className = "addsex">Biological sex</div>
-                 <div className = "fill"/>
-                 {/** Make these two fields functionable later */}
-                 <SexCheckBox sex="Male" onTick={() => console.log("Male here")}/>
-                 <SexCheckBox sex="Female" onTick={() => console.log("Female here")}/>
-             </div>
+      <div className="header">
+        <img className="headerlogo" src={logo} />
+      </div>
+      <br></br>
+      <Card className="userdetails">
+        <CardContent>
+          <h2 className="addmember">Add member</h2>
+          <br />
+          <div className="addname">
+            <div className="addfirst">First name</div>
+            <div className="fill" />
+            <TextField />
+            <div className="fill" />
+            Surname <div className="fill" />
+            <TextField />
+          </div>
+          <br />
+          <br />
+          <div className="adddmy">
+            <div className="adddob">DOB</div>
+            <div className="fill" />
+            {/** what does this mean */}
+            {/** make this a cus */}
+            <TextField
+              id="outlined-basic"
+              label="day"
+              variant="outlined"
+              onChange={handledateChange}
+              value={date}
+            />{" "}
+            <TextField
+              id="outlined-basic"
+              label="month"
+              variant="outlined"
+              onChange={handlemonthChange}
+              value={month}
+            />{" "}
+            <TextField
+              id="outlined-basic"
+              label="year"
+              variant="outlined"
+              onChange={handleyearChange}
+              value={year}
+            />
+          </div>
+          <br />
+          <div className="addgender">
+            <div className="addsex">Biological sex</div>
+            <div className="fill" />
+            {/** Make these two fields functionable later */}
+            <SexCheckBox gender="Male" onCheck={handleOnSexChecked}/>
+            <SexCheckBox gender="Female" onCheck={handleOnSexChecked}/>
+          </div>
         </CardContent>
       </Card>
-      
-      <br/>
 
-      <Card className = "userquestions">
-      <CardContent>
-      <h2 className = "intialconditiondescription">{initialConfirmConditionDescription}</h2>
-      <div className = "initialissue">{getInitialIssues()}</div>    
       <br />
-      {symptomsCheckBoxes}
-      <br />
-      {symptomsAndConditions.length > 0 ? (
-        <h2 className = "intialconditiondescription">{symptomsConfirmDescription}</h2>
-      ) : null}
-      {symptomsAndConditions}
-      <br />
-      {conditionsCheckBoxes.length > 0 ? (
-        <h2 className = "intialconditiondescription">{relatedConditionsConfirmDescription}</h2>
-      ) : null}
-      {conditionsCheckBoxes}
-      <div className = "button">
-      <CustomButton
-        loadComponent={() => populateSymptoms(conditionsArray)}
-        title="Get Symptoms"
-      />
-      </div>
-      <br />
-      <div className = "button">
-      <CustomButton
-        loadComponent={populateConditions}
-        title="Get Related Conditions"
-      />
-      </div>
-      </CardContent>
+
+      <Card className="userquestions">
+        <CardContent>
+          <h2 className="intialconditiondescription">
+            {initialConfirmConditionDescription}
+          </h2>
+          {/** Daphnes vertically center implementation */}
+          {/* <div className="initialissue">{getInitialIssues()}</div> */}
+          <div className="horizontallyCenterInitIssue">
+            {getInitialIssues()}
+          </div>
+          <br />
+          {symptomsCheckBoxes}
+          <br />
+          {symptomsAndConditions.length > 0 ? (
+            <h2 className="intialconditiondescription">
+              {symptomsConfirmDescription}
+            </h2>
+          ) : null}
+          {symptomsAndConditions}
+          <br />
+          {conditionsCheckBoxes.length > 0 ? (
+            <h2 className="intialconditiondescription">
+              {relatedConditionsConfirmDescription}
+            </h2>
+          ) : null}
+          {conditionsCheckBoxes}
+          <div className="button">
+            <CustomButton
+              loadComponent={() => populateSymptoms(conditionsArray)}
+              title="Get Symptoms"
+            />
+          </div>
+          <br />
+          <div className="button">
+            <CustomButton
+              loadComponent={populateConditions}
+              title="Get Related Conditions"
+            />
+          </div>
+        </CardContent>
       </Card>
       <br />
     </React.Fragment>

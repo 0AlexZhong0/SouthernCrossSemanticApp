@@ -1,57 +1,58 @@
-.addmember{
-    font-family: Arial, Helvetica, sans-serif;
-    text-align: left;
-    columns: 100px 1;
-
+.addmember {
+  font-family: Arial, Helvetica, sans-serif;
+  text-align: left;
+  columns: 100px 1;
 }
 
-.addfirst{
-    display: inline-block;
-    columns: 100px ;
-    text-align: right;
+.addfirst {
+  display: inline-block;
+  columns: 100px;
+  text-align: right;
 }
 
-
-
-.addname{
-    font-family: Arial, Helvetica, sans-serif;
-    
+.addname {
+  font-family: Arial, Helvetica, sans-serif;
 }
 
-.adddob{
-    font-family: Arial, Helvetica, sans-serif;
-    display: inline-block;
-    columns: 100px 1;
-    text-align: right;
+.adddob {
+  font-family: Arial, Helvetica, sans-serif;
+  display: inline-block;
+  columns: 100px 1;
+  text-align: right;
 }
 
-.addsex{
-    font-family: Arial, Helvetica, sans-serif;
-    display: inline-block;
-    display: inline-block;
-    text-align: right;
+.addsex {
+  font-family: Arial, Helvetica, sans-serif;
+  display: inline-block;
+  display: inline-block;
+  text-align: right;
 }
 
-.headerlogo{
-    width: 100%;
+.headerlogo {
+  width: 100%;
 }
 
-.fill{
-    display: inline-block;
-    columns: 40px 1;
+.fill {
+  display: inline-block;
+  columns: 40px 1;
 }
 
-.intialconditiondescription{
-    font-family: Arial, Helvetica, sans-serif;
-    text-align: center;
+.intialconditiondescription {
+  font-family: Arial, Helvetica, sans-serif;
+  text-align: center;
 }
 
-.initialissue{
-    position: relative;
-    top:45%;
-    left:45%;
+.initialissue {
+  position: relative;
+  top: 45%;
+  left: 45%;
 }
 
-.button{
-    text-align: center;
+.horizontallyCenterInitIssue {
+  justify-content: center;
+  display: flex
+}
+
+.button {
+  text-align: center;
 }
