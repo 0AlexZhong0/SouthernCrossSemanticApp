@@ -41,8 +41,6 @@ const MedicalForm = (): JSX.Element => {
 
  const populateConditions = (): void => {
     const conditions: JSX.Element[] = []
-    // console.log("value",{value});
-    // console.log("year",year);
     const diagnoseResult: Promise<any> = diagnoseConditionsFromSymptoms(symptomsArray, value, year)
     // populate the potential related issues and display more checkbox onto the page            
     diagnoseResult.then((result: IResult[]): void => {
@@ -91,25 +89,25 @@ const MedicalForm = (): JSX.Element => {
              </h3>
 
              <div className = "addname">
-                 First name {" "} 
+                 <div className = "addfirst">First name</div> 
+                 <div className = "fill"/>
                  <TextField/>
-                 {" "}
-                 Surname {" "} 
+                 <div className = "fill"/>
+                 Surname <div className = "fill"/>
                  <TextField/>   
              </div>
 
              <br></br>
              
-            
             <div>
-             
-            <div className = "adddob">DOB</div> {" "} 
+                <div className = "adddob">DOB</div> 
+                <div className = "fill"/>
             
-            <TextField id="outlined-basic" label="d" variant="outlined" onChange = {handledateChange} value = {date} />
-            {" "} 
-            <TextField id="outlined-basic" label="m" variant="outlined" onChange = {handlemonthChange} value = {month}/>
-            {" "} 
-            <TextField id="outlined-basic" label="y" variant="outlined" onChange = {handleyearChange} value = {year}/>
+                <TextField id="outlined-basic" label="day" variant="outlined" onChange = {handledateChange} value = {date} />
+                {" "} 
+                <TextField id="outlined-basic" label="month" variant="outlined" onChange = {handlemonthChange} value = {month}/>
+                {" "} 
+                <TextField id="outlined-basic" label="year" variant="outlined" onChange = {handleyearChange} value = {year}/>
 
             </div>
              
@@ -117,7 +115,7 @@ const MedicalForm = (): JSX.Element => {
 
              <div>
                  <div className = "addsex">Biological sex</div>
-                 {" "}
+                 <div className = "fill"/>
                  <CustomCheckBox text="Male" setValue = {setValue}/>
                  <CustomCheckBox text="Female" setValue = {setValue}/>
                  
@@ -125,17 +123,17 @@ const MedicalForm = (): JSX.Element => {
 
         </CardContent>
       </Card>
-      <div>
-        <CustomCheckBox text="Heart Attack" setValue = {setValue}/>
-        <div>
-          <CustomButton loadComponent={() => populateSymptoms("Heart Attack")} title="Get Symptoms" />
-          <br></br>
-          {symptomsCheckBoxes}
-          <br />
-          <CustomButton loadComponent={populateConditions} title="Get Conditions" />
-          <br></br>
-          {conditionsCheckBoxes}
 
+      <div>
+          <CustomCheckBox text="Heart Attack" setValue = {setValue}/>
+          <div>
+              <CustomButton loadComponent={() => populateSymptoms("Heart Attack")} title="Get Symptoms" />
+              <br></br>
+              {symptomsCheckBoxes}
+              <br />
+              <CustomButton loadComponent={populateConditions} title="Get Conditions" />
+              <br></br>
+              {conditionsCheckBoxes}
         </div>
       </div>
 
@@ -147,7 +145,6 @@ const MedicalForm = (): JSX.Element => {
           <CustomButton loadComponent={() => populateSymptoms("Obstruction of a pulmonary artery")} title="Get Symptoms" />
           <br /><br />
           <CustomButton loadComponent={populateConditions} title="Get Conditions" />
-
         </div>
       </div>
 
@@ -160,7 +157,6 @@ const MedicalForm = (): JSX.Element => {
           <CustomButton loadComponent={() => populateSymptoms("Coronary heart disease")} title="Get Symptoms" />
           <br /><br />
           <CustomButton loadComponent={populateConditions} title="Get Conditions" />
-
         </div>
       </div>
     </React.Fragment>
