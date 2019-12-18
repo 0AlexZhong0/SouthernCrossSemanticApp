@@ -1,7 +1,11 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
+# environment variables
+# .env
+
 # dependencies
-client/node_modules
+node_modules
+package-lock.json
 /.pnp
 .pnp.js
 
@@ -23,16 +27,15 @@ yarn-debug.log*
 yarn-error.log*
 
 # python flask
-server/flask/__pycache__
-server/flask/.ipynb_checkpoints
-server/flask/.ipynb
+__pycache__
+.ipynb_checkpoints
+.ipynb
 
 # virtual environment
-server/flask/VENV
-server/flask/ENV
-server/flask/venv
-server/flask/.venv
-server/flask/.env
+VENV
+ENV
+venv
+.venv
 
 # code
 .vscode
