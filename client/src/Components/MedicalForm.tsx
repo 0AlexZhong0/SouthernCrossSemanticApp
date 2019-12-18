@@ -53,7 +53,7 @@ const formatSymptomsAndGetArray = (possibleSymptoms: string): string[] => {
   return possibleSyms
 }
 
-// These two components are very similar, can group them into one function
+// The components below are very similar, can group them into one function
 const ConditionNameAndRelatedSymptoms = (props: {
   conditionName: string
   symptomsCheckBoxes: JSX.Element[]
@@ -82,6 +82,13 @@ const ConditionNameAndRelatedConditions = (props: {
       {conditionCheckBoxes}
     </div>
   )
+}
+
+const ConditionNameWithNoRelatedConditions = (props: {
+  conditionName: string
+}): JSX.Element => {
+  const description: string = `No related conditions to ${props.conditionName} found`
+  return <h3>{description}</h3>
 }
 
 const MedicalForm = (): JSX.Element => {
@@ -220,6 +227,11 @@ const MedicalForm = (): JSX.Element => {
     const sex: string = "male"
     const yearOfBirth: number = 1993
     const relatedConditionsFromSymptoms: Promise<JSX.Element>[] = []
+    const noDuplicateIssueNameChecker: string[] = []
+    /**
+     * An iteration, for each condition (i.e Heart Attack), pass the selected symptoms to the
+     * diagnose API to generate related conditions
+     */
     Object.keys(symptomsWithConditionAsKey).forEach(
       (selectedCondition: string) => {
         const diagnoseResult: Promise<IResult[]> = diagnoseConditionsFromSymptoms(
@@ -234,24 +246,51 @@ const MedicalForm = (): JSX.Element => {
             // select the top three issue
             res.slice(0, 3).forEach((issue: IIssue, index: number): void => {
               const IssueName: string = issue.Issue.Name
-              conditionsCheckBoxes.push(
-                <CustomCheckBox
-                  isCondition={true}
-                  text={IssueName}
-                  key={IssueName + `${index}`}
-                  handleChecked={handleChecked}
-                  handleUnchecked={handleUnchecked}
+              /**
+               * only push in the condition if it is not duplicate
+               * checking: 
+               * 1. if the related condition has the same name as the condition
+               * 2. if it is a already populated condition (a condition that is on the form)
+               */
+              if (
+                IssueName !== selectedCondition &&
+                !noDuplicateIssueNameChecker.includes(IssueName) &&
+                !conditionsArray.includes(IssueName)
+              ) {
+                conditionsCheckBoxes.push(
+                  <CustomCheckBox
+                    isCondition={true}
+                    text={IssueName}
+                    key={IssueName + `${index}`}
+                    handleChecked={handleChecked}
+                    handleUnchecked={handleUnchecked}
+                  />
+                )
+
+                noDuplicateIssueNameChecker.push(IssueName)
+              } else {
+                // do nothing at this stage
+              }
+            })
+            // no related condtions have been found according to the symptoms of the selected conditions
+            if (conditionsCheckBoxes.length === 0) {
+              const noRelatedConditions: JSX.Element = (
+                <ConditionNameWithNoRelatedConditions
+                  key={selectedCondition}
+                  conditionName={selectedCondition}
                 />
               )
-            })
-            const relatedCondition: JSX.Element = (
-              <ConditionNameAndRelatedConditions
-                key={selectedCondition}
-                conditionName={selectedCondition}
-                conditionCheckBoxes={conditionsCheckBoxes}
-              />
-            )
-            return relatedCondition
+              return noRelatedConditions
+            } else {
+              const relatedCondition: JSX.Element = (
+                <ConditionNameAndRelatedConditions
+                  key={selectedCondition}
+                  conditionName={selectedCondition}
+                  conditionCheckBoxes={conditionsCheckBoxes}
+                />
+              )
+              return relatedCondition
+            }
           }
         )
         relatedConditionsFromSymptoms.push(relatedConditionPromise)
@@ -285,30 +324,32 @@ const MedicalForm = (): JSX.Element => {
   }
 
   // can refactor the conditional rendering below
+  // change it to a loadComponent similar type of functions
   return (
     <React.Fragment>
       <h2>{initialConfirmConditionDescription}</h2>
-      {getInitialIssues()}
-      <CustomButton
-        loadComponent={() => populateSymptoms(conditionsArray)}
-        title="Get Symptoms"
-      />
+      {getInitialIssues()}    
       <br />
       {symptomsCheckBoxes}
+      <br />
       {symptomsAndConditions.length > 0 ? (
         <h2>{symptomsConfirmDescription}</h2>
       ) : null}
       {symptomsAndConditions}
       <br />
-      <CustomButton
-        loadComponent={populateConditions}
-        title="Get Related Conditions"
-      />
-      <br />
       {conditionsCheckBoxes.length > 0 ? (
         <h2>{relatedConditionsConfirmDescription}</h2>
       ) : null}
       {conditionsCheckBoxes}
+      <CustomButton
+        loadComponent={() => populateSymptoms(conditionsArray)}
+        title="Get Symptoms"
+      />
+      <br />
+      <CustomButton
+        loadComponent={populateConditions}
+        title="Get Related Conditions"
+      />
     </React.Fragment>
   )
 }
