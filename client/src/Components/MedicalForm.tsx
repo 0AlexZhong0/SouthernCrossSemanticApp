@@ -405,30 +405,41 @@ const MedicalForm = (): JSX.Element => {
              </div>
         </CardContent>
       </Card>
+      
+      <br/>
 
-      <h2>{initialConfirmConditionDescription}</h2>
-      {getInitialIssues()}    
+      <Card className = "userquestions">
+      <CardContent>
+      <h2 className = "intialconditiondescription">{initialConfirmConditionDescription}</h2>
+      <div className = "initialissue">{getInitialIssues()}</div>    
       <br />
       {symptomsCheckBoxes}
       <br />
       {symptomsAndConditions.length > 0 ? (
-        <h2>{symptomsConfirmDescription}</h2>
+        <h2 className = "intialconditiondescription">{symptomsConfirmDescription}</h2>
       ) : null}
       {symptomsAndConditions}
       <br />
       {conditionsCheckBoxes.length > 0 ? (
-        <h2>{relatedConditionsConfirmDescription}</h2>
+        <h2 className = "intialconditiondescription">{relatedConditionsConfirmDescription}</h2>
       ) : null}
       {conditionsCheckBoxes}
+      <div className = "button">
       <CustomButton
         loadComponent={() => populateSymptoms(conditionsArray)}
         title="Get Symptoms"
       />
+      </div>
       <br />
+      <div className = "button">
       <CustomButton
         loadComponent={populateConditions}
         title="Get Related Conditions"
       />
+      </div>
+      </CardContent>
+      </Card>
+      <br />
     </React.Fragment>
   )
 }

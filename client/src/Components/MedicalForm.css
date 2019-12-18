@@ -1,6 +1,7 @@
 .addmember{
     font-family: Arial, Helvetica, sans-serif;
     text-align: left;
+    columns: 100px 1;
 }
 
 .addfirst{
@@ -35,4 +36,17 @@
 .fill{
     display: inline-block;
     columns: 40px 1;
+}
+
+.intialconditiondescription{
+    font-family: Arial, Helvetica, sans-serif;
+    text-align: center;
+}
+
+.initialissue{
+    text-align: center;
+}
+
+.button{
+    text-align: center;
 }
