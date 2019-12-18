@@ -106,7 +106,10 @@ const ConditionNameWithNoRelatedConditions = (props: {
   return <h3>{description}</h3>
 }
 
-const SexCheckBox = (props: { gender: string, onCheck: (gender: string) => void }): JSX.Element => {
+const SexCheckBox = (props: {
+  gender: string
+  onCheck: (gender: string) => void
+}): JSX.Element => {
   const [checked, setChecked] = React.useState(false)
   const { gender, onCheck } = props
 
@@ -114,8 +117,7 @@ const SexCheckBox = (props: { gender: string, onCheck: (gender: string) => void 
     if (checked) {
       onCheck("")
       setChecked(false)
-    }
-    else {
+    } else {
       onCheck(gender)
       setChecked(true)
     }
@@ -285,6 +287,12 @@ const MedicalForm = (): JSX.Element => {
   }
 
   const populateConditions = (): void => {
+    // hotfix: have not yet figured out how to handle the error in my existing promise
+    if (sex === "" || year === "") {
+      alert("Make sure the form is filled out properly")
+      return
+    }
+
     const relatedConditionsFromSymptoms: Promise<JSX.Element>[] = []
     const noDuplicateIssueNameChecker: string[] = []
     /**
@@ -384,72 +392,54 @@ const MedicalForm = (): JSX.Element => {
   // change it to a loadComponent similar type of functions
   return (
     <React.Fragment>
-      {/** Card Component Here */}
-      <div className="header">
-        <img className="headerlogo" src={logo} />
-      </div>
-      <br></br>
-      <Card className="userdetails">
+      {/** Personal Information Card Component Here */}      
+      <img className="headerLogo" src={logo} alt="SouthernCross Logo"/>
+      <br />
+      <Card>
         <CardContent>
-          <h2 className="addmember">Add member</h2>
-          <br />
-          <div className="addname">
-            <div className="addfirst">First name</div>
+          <h2 className="arialFont">Personal Information</h2>
+          <TextField label="First name" />
             <div className="fill" />
-            <TextField />
+            <TextField label="Surname" />
             <div className="fill" />
-            Surname <div className="fill" />
-            <TextField />
-          </div>
           <br />
+          <h3 className="arialFont">Date of Birth</h3>
+          <TextField
+            id="date-outlined-basic"
+            label="day"
+            variant="outlined"
+            onChange={handledateChange}
+            value={date}
+          />{" "}
+          <TextField
+            id="month-outlined-basic"
+            label="month"
+            variant="outlined"
+            onChange={handlemonthChange}
+            value={month}
+          />{" "}
+          <TextField
+            id="year-outlined-basic"
+            label="year"
+            variant="outlined"
+            onChange={handleyearChange}
+            value={year}
+          />
           <br />
-          <div className="adddmy">
-            <div className="adddob">DOB</div>
-            <div className="fill" />
-            {/** what does this mean */}
-            {/** make this a cus */}
-            <TextField
-              id="outlined-basic"
-              label="day"
-              variant="outlined"
-              onChange={handledateChange}
-              value={date}
-            />{" "}
-            <TextField
-              id="outlined-basic"
-              label="month"
-              variant="outlined"
-              onChange={handlemonthChange}
-              value={month}
-            />{" "}
-            <TextField
-              id="outlined-basic"
-              label="year"
-              variant="outlined"
-              onChange={handleyearChange}
-              value={year}
-            />
-          </div>
-          <br />
-          <div className="addgender">
-            <div className="addsex">Biological sex</div>
-            <div className="fill" />
-            {/** Make these two fields functionable later */}
-            <SexCheckBox gender="Male" onCheck={handleOnSexChecked}/>
-            <SexCheckBox gender="Female" onCheck={handleOnSexChecked}/>
-          </div>
+          <h3 className="arialFont">Biological sex</h3>
+            <SexCheckBox gender="Male" onCheck={handleOnSexChecked} />
+            <SexCheckBox gender="Female" onCheck={handleOnSexChecked} />
         </CardContent>
       </Card>
 
       <br />
-
-      <Card className="userquestions">
+      
+      {/* Conditions and Symptoms card below */}
+      <Card>
         <CardContent>
-          <h2 className="intialconditiondescription">
+          <h2 className="description">
             {initialConfirmConditionDescription}
           </h2>
-          {/** Daphnes vertically center implementation */}
-          {/* <div className="initialissue">{getInitialIssues()}</div> */}
           <div className="horizontallyCenterInitIssue">
             {getInitialIssues()}
           </div>
@@ -457,14 +447,14 @@ const MedicalForm = (): JSX.Element => {
           {symptomsCheckBoxes}
           <br />
           {symptomsAndConditions.length > 0 ? (
-            <h2 className="intialconditiondescription">
+            <h2 className="description">
               {symptomsConfirmDescription}
             </h2>
           ) : null}
           {symptomsAndConditions}
           <br />
           {conditionsCheckBoxes.length > 0 ? (
-            <h2 className="intialconditiondescription">
+            <h2 className="description">
               {relatedConditionsConfirmDescription}
             </h2>
           ) : null}
@@ -474,9 +464,8 @@ const MedicalForm = (): JSX.Element => {
               loadComponent={() => populateSymptoms(conditionsArray)}
               title="Get Symptoms"
             />
-          </div>
           <br />
-          <div className="button">
+          <br />
             <CustomButton
               loadComponent={populateConditions}
               title="Get Related Conditions"

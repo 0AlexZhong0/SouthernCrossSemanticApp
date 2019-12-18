@@ -1,34 +1,8 @@
-.addmember {
-  font-family: Arial, Helvetica, sans-serif;
-  text-align: left;
-  columns: 100px 1;
+.arialFont {
+  font-family: Arial, Helvetica, sans-serif
 }
 
-.addfirst {
-  display: inline-block;
-  columns: 100px;
-  text-align: right;
-}
-
-.addname {
-  font-family: Arial, Helvetica, sans-serif;
-}
-
-.adddob {
-  font-family: Arial, Helvetica, sans-serif;
-  display: inline-block;
-  columns: 100px 1;
-  text-align: right;
-}
-
-.addsex {
-  font-family: Arial, Helvetica, sans-serif;
-  display: inline-block;
-  display: inline-block;
-  text-align: right;
-}
-
-.headerlogo {
+.headerLogo {
   width: 100%;
 }
 
@@ -37,15 +11,9 @@
   columns: 40px 1;
 }
 
-.intialconditiondescription {
+.description {
   font-family: Arial, Helvetica, sans-serif;
   text-align: center;
-}
-
-.initialissue {
-  position: relative;
-  top: 45%;
-  left: 45%;
 }
 
 .horizontallyCenterInitIssue {
