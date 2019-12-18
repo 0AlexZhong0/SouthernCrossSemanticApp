@@ -29,7 +29,7 @@ const CustomCheckBox = (props: IProps): JSX.Element => {
     // Populate checkboxes with all the possible conditions
     <FormControlLabel
       control={
-        <Checkbox checked={isChecked} onChange={tickOrUntick} />
+        <Checkbox checked={isChecked} onChange={tickOrUntick} style ={{color: "#008bce",}}/>
       }
       label={text}
     />
