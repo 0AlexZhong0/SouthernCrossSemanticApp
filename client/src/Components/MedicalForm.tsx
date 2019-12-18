@@ -373,9 +373,10 @@ const MedicalForm = (): JSX.Element => {
          <br></br>
          <Card className = "userdetails">
           <CardContent>
-             <h3 className = "addmember">
+             <h2 className = "addmember">
                  Add member      
-             </h3>
+             </h2>
+             <br/>
              <div className = "addname">
                  <div className = "addfirst">First name</div> 
                  <div className = "fill"/>
@@ -384,8 +385,9 @@ const MedicalForm = (): JSX.Element => {
                  Surname <div className = "fill"/>
                  <TextField/>   
              </div>
-             <br />             
-            <div>
+             <br />
+            <br />         
+            <div className = "adddmy">
                 <div className = "adddob">DOB</div> 
                 <div className = "fill"/>
                 {/** make this a cus */}
@@ -396,7 +398,7 @@ const MedicalForm = (): JSX.Element => {
                 <TextField id="outlined-basic" label="year" variant="outlined" onChange = {handleyearChange} value = {year}/>
             </div>            
              <br />
-             <div>
+             <div className = "addgender">
                  <div className = "addsex">Biological sex</div>
                  <div className = "fill"/>
                  {/** Make these two fields functionable later */}

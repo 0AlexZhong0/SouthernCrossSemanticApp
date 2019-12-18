@@ -2,6 +2,7 @@
     font-family: Arial, Helvetica, sans-serif;
     text-align: left;
     columns: 100px 1;
+
 }
 
 .addfirst{
@@ -9,6 +10,8 @@
     columns: 100px ;
     text-align: right;
 }
+
+
 
 .addname{
     font-family: Arial, Helvetica, sans-serif;
@@ -44,7 +47,9 @@
 }
 
 .initialissue{
-    text-align: center;
+    position: relative;
+    top:45%;
+    left:45%;
 }
 
 .button{
