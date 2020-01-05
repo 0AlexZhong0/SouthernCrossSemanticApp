@@ -125,7 +125,7 @@ const SexCheckBox = (props: {
 
   return (
     <FormControlLabel
-      control={<Checkbox checked={checked} onChange={handleChecked} />}
+      control={<Checkbox checked={checked} onChange={handleChecked} style ={{color: "#008bce",}} />}
       label={gender}
     />
   )
