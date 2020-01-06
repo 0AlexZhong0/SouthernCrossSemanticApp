@@ -393,12 +393,13 @@ const MedicalForm = (): JSX.Element => {
   // change it to a loadComponent similar type of functions
   return (
     <React.Fragment>
-      {/** Personal Information Card Component Here */}      
+      {/** Personal Information Card Component Here */}
+      <div className = "bodyspacing">
+      <div className = "body">     
       <img className="headerLogo" src={logo} alt="SouthernCross Logo"/>
-      <br />
-      <br />
+      <br /><br /><br />
       <Grid container={true} alignItems="center" justify="center">
-      <Grid item={true} xs = {10} sm ={10} md = {10}> 
+      <Grid item={true} xs = {10} sm ={10} md = {11}> 
       <Card>
         <CardContent>
           <h2 className="arialFont">Personal Information</h2>
@@ -441,7 +442,7 @@ const MedicalForm = (): JSX.Element => {
       
       {/* Conditions and Symptoms card below */} 
       <Grid container={true} alignItems="center" justify="center">
-      <Grid item={true} xs = {10} sm ={10} md = {10}> 
+      <Grid item={true} xs = {10} sm ={10} md = {11}> 
       <Card>
         <CardContent>
           <div className = "formfont">
@@ -484,6 +485,9 @@ const MedicalForm = (): JSX.Element => {
       </Card>
       </Grid></Grid>
       <br />
+      <br />
+      </div>
+      </div>
     </React.Fragment>
   )
 }

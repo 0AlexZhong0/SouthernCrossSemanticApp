@@ -31,3 +31,15 @@
 .button {
   text-align: center;
 }
+
+.body{
+  background-image: url(background.jpg);
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.bodyspacing{
+  margin: 0;
+  padding: 0;
+  display: inline-block;
+}
