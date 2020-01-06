@@ -1,79 +1,47 @@
 import { HEALTH_BASE_URL } from "SymptomCheckerApi/ApiUtilities/requests";
 import getAccessToken from "auth/getAccessToken";
 import requests from "SymptomCheckerApi/ApiUtilities/requests";
+import postResGetId from "SymptomCheckerApi/ApiUtilities/postResGetId"
 
-// here can be the place where you resolve all of the functions from
-
-// hard-coded functions session, perhaps do not need to export all these functions
-// think of a way to encompass all the functions written below
-// 87 is a heart attack example
-export const getIssueId = (issue: string): number => {
-  if(issue === "Heart Attack"){
-    return 87;
-  }
- 
-  if(issue === "Coronary heart disease"){
-    return 86;
-  }
-
-  if(issue === "Obstruction of a pulmonary artery"){
-    return 167;
-  }
-
-  return 0; // D: hardcoded so will never reach here
+export interface IIdResponse {
+  issue_ids?: number[],
+  symptom_ids?: number[]
 }
 
-
-export const getSymptomIds = (symptoms: string[]): number[] => {
-
-  const heartattacksymptoms = ["Shortness of breath", "Unconsciousness", " short", "Chest pain", "Chest tightness", "Vomiting", "Weight gain", "Palpitations", "Cold sweats", "Tiredness", "Going black before the eyes", "Nausea"]
-  const coronaryheartsymptoms = ["Chest pain", "Chest tightness", "Cold sweats", "Going black before the eyes", "Heartburn", "Shortness of breath", "Tiredness", "Unconsciousness", " short", "Weight gain"]  
-  const obstrpularterysymptoms = ["Shortness of breath", "Unconsciousness", " short", "Chest pain", "Chest tightness", "Palpitations", "Cough", "Fast", " deepened breathing", "Going black before the eyes"]
-
-  if(symptoms.toString() === heartattacksymptoms.toString() ){
-    return [29, 144, 17];  // select the top three of
-   }
-  
-  if(symptoms.toString() ===  obstrpularterysymptoms.toString() ){
-    return [29, 144, 31];  //the top three is exactly the sane as heart attack so changed the symptoms
-   }
- 
-  if(symptoms.toString() === coronaryheartsymptoms.toString() ){
-   return [57, 31, 139];  // select the top three of
-  }
-
-  else{
-    return [0, 0, 0] // D: hardcoded so will never reach here
-  }
-
+export const getIds = (names: string[], isIssue: boolean): Promise<any> => {
+  const flaskResponse: Promise<any> = postResGetId(names, isIssue).then((res: IIdResponse) => res)
+  return flaskResponse
 }
 
 // token required session
+// deals with only one issue at the moment
 export const getIssueInfo = (issuedId: number): Promise<any> => {
   const issueInfo = getAccessToken()
-    .then((token: {Token: string}) => {
+    .then((token: { Token: string }) => {
       const issueInfoUri =
         HEALTH_BASE_URL +
         `/issues/${issuedId}/info?token=${token.Token}&format=json&language=en-gb`;
       const issueInfoResult = requests(issueInfoUri);
       return issueInfoResult;
-      
-    })
-    .catch(err => console.log(err));
+
+    })    
   return issueInfo;
 };
 
+export const diagnoseConditionsFromSymptoms = (symptoms: string[], sex: string, year_of_birth: number | string): Promise<any> => {
+    const isIssue: boolean = false
+  const flaskResponse: Promise<any> = getIds(symptoms, isIssue)
 
-export const diagnoseConditionsFromSymptoms = (symptoms: string[], sex: string, year_of_birth: number | string): Promise<any> =>  {
-  const symptomIds = getSymptomIds(symptoms)
-  const diagnosis = getAccessToken().then((token: {Token: string}) => {
-    const diagnoseUri: string = HEALTH_BASE_URL +  `/diagnosis?symptoms=[${symptomIds}]&gender=${sex}&year_of_birth=${year_of_birth}&token=${token.Token}&format=json&language=en-gb`
-    const relatedSymptoms = requests(diagnoseUri)
+   const diagnosisRes: Promise<any> = flaskResponse.then((res: IIdResponse) => {
+    const symptomIds: number[] = res.symptom_ids!  // non-null assertion
+    const diagnosis: Promise<any> = getAccessToken().then((token: { Token: string }) => {
+      const diagnoseUri: string = HEALTH_BASE_URL + `/diagnosis?symptoms=[${symptomIds}]&gender=${sex}&year_of_birth=${year_of_birth}&token=${token.Token}&format=json&language=en-gb`
+      const relatedConditions: Promise<any> = requests(diagnoseUri)
+      return relatedConditions
+    })
     
-    return relatedSymptoms
+    return diagnosis
   })
-   
-  return diagnosis
+  
+  return diagnosisRes
 }
-
-
