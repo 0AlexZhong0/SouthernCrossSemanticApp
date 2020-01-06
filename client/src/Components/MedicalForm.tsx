@@ -4,6 +4,7 @@ import {
   FormControlLabel,
   Card,
   CardContent,
+  Grid,
   TextField
 } from "@material-ui/core"
 
@@ -395,6 +396,9 @@ const MedicalForm = (): JSX.Element => {
       {/** Personal Information Card Component Here */}      
       <img className="headerLogo" src={logo} alt="SouthernCross Logo"/>
       <br />
+      <br />
+      <Grid container={true} alignItems="center" justify="center">
+      <Grid item={true} xs = {10} sm ={10} md = {10}> 
       <Card>
         <CardContent>
           <h2 className="arialFont">Personal Information</h2>
@@ -431,10 +435,13 @@ const MedicalForm = (): JSX.Element => {
             <SexCheckBox gender="Female" onCheck={handleOnSexChecked} />
         </CardContent>
       </Card>
+      </Grid></Grid>
 
       <br />
       
-      {/* Conditions and Symptoms card below */}
+      {/* Conditions and Symptoms card below */} 
+      <Grid container={true} alignItems="center" justify="center">
+      <Grid item={true} xs = {10} sm ={10} md = {10}> 
       <Card>
         <CardContent>
           <div className = "formfont">
@@ -475,6 +482,7 @@ const MedicalForm = (): JSX.Element => {
           </div>
         </CardContent>
       </Card>
+      </Grid></Grid>
       <br />
     </React.Fragment>
   )
