@@ -1,11 +1,11 @@
+// following the typed arguments for fetch
 const requests = (
   uri: string,
   init?: RequestInit | undefined
-  ): Promise<Response> => {
-    // default is a GET request
-    const apiPromise = fetch(uri, init)
-  
-   .then(
+): Promise<Response> => {
+  // default is a GET request
+  const apiPromise = fetch(uri, init)
+    .then(
       (res: Response): Response => {
         if (!res.ok) {
           throw Error(res.statusText);
