@@ -437,6 +437,7 @@ const MedicalForm = (): JSX.Element => {
       {/* Conditions and Symptoms card below */}
       <Card>
         <CardContent>
+          <div className = "formfont">
           <h2 className="description">
             {initialConfirmConditionDescription}
           </h2>
@@ -470,6 +471,7 @@ const MedicalForm = (): JSX.Element => {
               loadComponent={populateConditions}
               title="Get Related Conditions"
             />
+          </div>
           </div>
         </CardContent>
       </Card>

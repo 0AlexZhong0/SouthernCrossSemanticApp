@@ -16,6 +16,10 @@
   text-align: center;
 }
 
+.formfont{
+  font-family: Arial, Helvetica, sans-serif;
+}
+
 .horizontallyCenterInitIssue {
   justify-content: center;
   display: flex
