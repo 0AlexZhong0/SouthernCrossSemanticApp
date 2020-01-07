@@ -400,6 +400,12 @@ const MedicalForm = (): JSX.Element => {
       <br /><br /><br />
       <Grid container={true} alignItems="center" justify="center">
       <Grid item={true} xs = {10} sm ={10} md = {11}> 
+        <div className = "header">
+        Your Details
+        </div>
+      </Grid></Grid>
+      <Grid container={true} alignItems="center" justify="center">
+      <Grid item={true} xs = {10} sm ={10} md = {11}> 
       <Card>
         <CardContent>
           <h2 className="arialFont">Personal Information</h2>
@@ -438,7 +444,13 @@ const MedicalForm = (): JSX.Element => {
       </Card>
       </Grid></Grid>
 
-      <br />
+      <br /><br />
+      <Grid container={true} alignItems="center" justify="center">
+      <Grid item={true} xs = {10} sm ={10} md = {11}> 
+        <div className = "header">
+        Your Health Conditions
+        </div>
+      </Grid></Grid>
       
       {/* Conditions and Symptoms card below */} 
       <Grid container={true} alignItems="center" justify="center">

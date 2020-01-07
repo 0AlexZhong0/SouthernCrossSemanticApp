@@ -43,3 +43,11 @@
   padding: 0;
   display: inline-block;
 }
+
+.header{
+  background-color: #008bce;
+  font-family: Arial, Helvetica, sans-serif;
+  color: white;
+  font-size:2vw;
+  margin-bottom:7px;
+}
