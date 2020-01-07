@@ -48,7 +48,7 @@ const relatedConditionsConfirmDescription: string = `Do you have these related c
 const issues: string[] = [
   "Heart attack",
   "Hernia",
-  "Abortion",
+  "Kidney stones",
   "Urinary tract infection"
 ]
 
@@ -397,14 +397,17 @@ const MedicalForm = (): JSX.Element => {
       <div className = "formbody">     
       <img className="headerLogo" src={logo} alt="SouthernCross Logo"/>
       <br /><br /><br />
+      <div className = "cardmargin">
       <Grid container={true} alignItems="center" justify="center">
-      <Grid item={true} xs = {10} sm ={10} md = {11}> 
-        <div className = "header">
+      <Grid item={true} xs = {12} sm ={12} md = {12}> 
+        <h2 className = "header">
         Your Details
-        </div>
+        </h2>
       </Grid></Grid>
+      </div>
+      <div className = "cardmargin">
       <Grid container={true} alignItems="center" justify="center">
-      <Grid item={true} xs = {10} sm ={10} md = {11}> 
+      <Grid item={true} xs = {12} sm ={12} md = {12}> 
       <Card>
         <CardContent>
           <h2 className="arialFont">Personal Information</h2>
@@ -442,18 +445,22 @@ const MedicalForm = (): JSX.Element => {
         </CardContent>
       </Card>
       </Grid></Grid>
+      </div>
 
       <br /><br />
+      <div className = "cardmargin">
       <Grid container={true} alignItems="center" justify="center">
-      <Grid item={true} xs = {10} sm ={10} md = {11}> 
-        <div className = "header">
+      <Grid item={true} xs = {12} sm ={12} md = {12}> 
+        <h2 className = "header">
         Your Health Condition(s)
-        </div>
+        </h2>
       </Grid></Grid>
+      </div>
       
       {/* Conditions and Symptoms card below */} 
+      <div className = "cardmargin">
       <Grid container={true} alignItems="center" justify="center">
-      <Grid item={true} xs = {10} sm ={10} md = {11}> 
+      <Grid item={true} xs = {12} sm ={12} md = {12}> 
       <Card>
         <CardContent>
           <div className = "formfont">
@@ -495,6 +502,7 @@ const MedicalForm = (): JSX.Element => {
         </CardContent>
       </Card>
       </Grid></Grid>
+      </div>
       <br />
       <br />
       </div>
