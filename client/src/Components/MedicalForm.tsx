@@ -394,8 +394,7 @@ const MedicalForm = (): JSX.Element => {
   return (
     <React.Fragment>
       {/** Personal Information Card Component Here */}
-      <div className = "bodyspacing">
-      <div className = "body">     
+      <div className = "formbody">     
       <img className="headerLogo" src={logo} alt="SouthernCross Logo"/>
       <br /><br /><br />
       <Grid container={true} alignItems="center" justify="center">
@@ -448,7 +447,7 @@ const MedicalForm = (): JSX.Element => {
       <Grid container={true} alignItems="center" justify="center">
       <Grid item={true} xs = {10} sm ={10} md = {11}> 
         <div className = "header">
-        Your Health Conditions
+        Your Health Condition(s)
         </div>
       </Grid></Grid>
       
@@ -498,7 +497,6 @@ const MedicalForm = (): JSX.Element => {
       </Grid></Grid>
       <br />
       <br />
-      </div>
       </div>
     </React.Fragment>
   )
