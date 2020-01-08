@@ -400,7 +400,7 @@ const MedicalForm = (): JSX.Element => {
   return (
     <React.Fragment>
       {/** Personal Information Card Component Here */}
-      <div className="formbody">
+      <div className="formBody">
         <img className="headerLogo" src={logo} alt="SouthernCross Logo" />
         <br />
         <br />
@@ -471,7 +471,7 @@ const MedicalForm = (): JSX.Element => {
             <Grid item={true} xs={12} sm={12} md={12}>
               <Card>
                 <CardContent>
-                  <div className="formfont">
+                  <div className="formFont">
                     <h2 className="description">
                       {initialConfirmConditionDescription}
                     </h2>

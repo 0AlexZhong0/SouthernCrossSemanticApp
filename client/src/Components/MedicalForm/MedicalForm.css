@@ -25,7 +25,7 @@ body{
   columns: 40px 1;
 }
 
-.formbody{
+.formBody{
   margin: 0;
   background-image: url(background.jpg);
   background-size: cover;
@@ -34,7 +34,7 @@ body{
   background-attachment: fixed;
 }
 
-.formfont{
+.formFont{
   font-family: Arial, Helvetica, sans-serif;
 }
 
