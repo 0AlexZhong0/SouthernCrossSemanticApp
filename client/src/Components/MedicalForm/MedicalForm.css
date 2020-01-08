@@ -1,0 +1,60 @@
+.arialFont {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+body{
+  margin: 0;
+}
+
+.button {
+  text-align: center;
+}
+
+.cardmargin{
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+.description {
+  font-family: Arial, Helvetica, sans-serif;
+  text-align: center;
+}
+
+.fill {
+  display: inline-block;
+  columns: 40px 1;
+}
+
+.formBody{
+  margin: 0;
+  background-image: url(background.jpg);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-attachment: fixed;
+}
+
+.formFont{
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.header{
+  background-color: #008bce;
+  font-family: Arial, Helvetica, sans-serif;
+  color: white;
+  margin-bottom:7px;
+}
+
+.headerLogo {
+  width: 100%;
+}
+
+.horizontallyInitIssue {
+  display: inline-block;
+}
+
+.centerInitIssue{
+  text-align: center;
+}
+
+
