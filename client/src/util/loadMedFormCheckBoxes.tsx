@@ -120,7 +120,6 @@ export const populateSymptoms = (
   })
 }
 
-// infinite loop, page does not render for some reasons
 export const populateConditions = (
   symptomsWithConditionAsKey: symsCondMapType,
   conditionsArray: string[],
