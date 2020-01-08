@@ -18,10 +18,10 @@ import {
   populateSymptoms,
   getInitialIssues,
   populateConditions
-} from "util/medicalForm"
+} from "util/loadMedFormCheckBoxes"
 
-// core types
-import { symsMapDispatchActionType, symsCondMapType } from "types/medicalForm"
+// reducers
+import { symsCondsMapReducer, conditionsArrayReducer } from "stores/medFormReducers"
 
 // frontend styling
 import logo from "logo.jpg"
@@ -35,49 +35,14 @@ const initIssues: string[] = [
   "Urinary tract infection"
 ]
 
-const initsymsCondsMap: symsCondMapType = {}
-
-// TODO: use reducer to update the symsCondsMap object
-// FIXME: not sure if this is the best way to update a dictionary object
-const symsCondsMapReducer = (
-  state: symsCondMapType,
-  action: symsMapDispatchActionType
-) => {
-  const conditionName: string = action.payload!.conditionName
-  const symptom: string = action.payload!.symptom
-  switch (action.type) {
-    case "addFirstSymptom":
-      console.log("Add first ...")
-      console.log(Object.assign({}, state, { [conditionName]: [symptom] }))
-      return Object.assign({}, state, { [conditionName]: [symptom] })
-    case "pushSymptom":
-      console.log("Pushing ...")
-      console.log(
-        Object.assign({}, state, {
-          [conditionName]: [...state[conditionName], symptom]
-        })
-      )
-      return Object.assign({}, state, {
-        [conditionName]: [...state[conditionName], symptom]
-      })
-    case "removeSymptom":
-      return Object.assign({}, state, {
-        [conditionName]: [...state[conditionName]].filter(
-          (sym: string) => sym !== symptom
-        )
-      })
-    case "reset":
-      return {}
-    default:
-      return state
-  }
-}
-
 const MedicalForm = (): JSX.Element => {
-  // FIXME: I am basically directly mutating all the state objects below
   const [symsCondsMap, symsCondsMapDispatch] = React.useReducer(
     symsCondsMapReducer,
-    initsymsCondsMap
+    {}
+  )
+  const [conditionsArray, condsArrDispatch] = React.useReducer(
+    conditionsArrayReducer,
+    []
   )
   const [symptomsAndConditions, setSymptomsAndConditions] = React.useState(
     [] as JSX.Element[]
@@ -88,32 +53,22 @@ const MedicalForm = (): JSX.Element => {
   const [conditionsCheckBoxes, setConditionsCheckBoxes] = React.useState(
     [] as JSX.Element[]
   )
-  const [conditionsArray, setConditionsArray] = React.useState([] as string[])
 
   // FIXME: the symsCondsMap object indefinitely gets updated, figure out why
+  // same with the conditionsArry object, it only works for the initial issues checkbox
   const handleChecked = (
     val: string,
     isCondition: boolean,
     conditionName?: string
   ): void => {
     if (isCondition) {
-      setConditionsArray([...conditionsArray, val])
+      condsArrDispatch({type: "pushCondition", condition: conditionName!})
     } else {
-      // assign the key an array with one symptom first, if the key is not in the object initially
-      if (!(conditionName! in symsCondsMap))
-        symsCondsMapDispatch({
-          type: "addFirstSymptom",
-          payload: { conditionName: conditionName!, symptom: val }
-        })
-      else
-        symsCondsMapDispatch({
-          type: "pushSymptom",
-          payload: { conditionName: conditionName!, symptom: val }
-        })
+      symsCondsMapDispatch({
+        type: "pushSymptom",
+        payload: { conditionName: conditionName!, symptom: val }
+      })
     }
-
-    console.log(`conditionsArray is ${JSON.stringify(conditionsArray)}`)
-    console.log(`symsCondsMap is ${JSON.stringify(symsCondsMap)}`)
   }
 
   // FIXME: directly mutating the state
@@ -123,24 +78,17 @@ const MedicalForm = (): JSX.Element => {
     conditionName?: string
   ): void => {
     if (isCondition) {
-      setConditionsArray(
-        [...conditionsArray].filter((condition: string) => condition !== val)
-      )
+      condsArrDispatch({type: "removeCondition", condition: conditionName!})
     } else {
-      if (symsCondsMap[conditionName!].length === 1)
-        // last symptom left in the array, reset the object
-        symsCondsMapDispatch({ type: "reset" })
-      else {
-        symsCondsMapDispatch({
-          type: "removeSymptom",
-          payload: { conditionName: conditionName!, symptom: val }
-        })
-      }
+      symsCondsMapDispatch({
+        type: "removeSymptom",
+        payload: { conditionName: conditionName!, symptom: val }
+      })
     }
   }
 
-  // can refactor the conditional rendering below
-  // change it to a loadComponent similar type of functions
+  // TODO: the two get conditions and symptoms buttons can be separated to distinct components
+  // think about how to layer it out more distinctively
   return (
     <React.Fragment>
       {/* The logo is too big and odd when embedded in the chatbot interface  */}

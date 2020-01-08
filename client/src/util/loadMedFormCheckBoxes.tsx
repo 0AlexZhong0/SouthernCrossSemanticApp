@@ -12,11 +12,15 @@ import {
   ConditionNameWithNoRelatedConditions,
   ConditionNameAndRelatedConditions
 } from "Components/MedicalForm/actionInfoDisplay/actionInfoDisplay"
-import { IResult, IIssue, symsCondMapType, handleCheckAction } from "types/medicalForm"
+import {
+  IResult,
+  IIssue,
+  symsCondMapType,
+  handleCheckAction
+} from "types/medForm"
 
-const formatSymptomsAndGetArray = (
-  possibleSymptoms: string
-): string[] => {
+// think about the possible ways of converting the code below using a reducer
+const formatSymptomsAndGetArray = (possibleSymptoms: string): string[] => {
   // very inefficent way of sorting the words
   // have something like "unconciousness, short" as one symptom in the list of symptoms
   // want to keep as a whole, instead of splitting it to "unconciousness" and " short" separately
@@ -34,21 +38,17 @@ export const getInitialIssues = (
   issues: string[],
   handleChecked: handleCheckAction,
   handleUnchecked: handleCheckAction
-): JSX.Element[] => {
-  const initIssues: JSX.Element[] = []
-  issues.forEach((issue: string, index: number) => {
-    initIssues.push(
-      <CustomCheckBox
-        key={issue + `${index}`}
-        isCondition={true}
-        text={issue}
-        handleChecked={handleChecked}
-        handleUnchecked={handleUnchecked}
-      />
-    )
-  })
-  return initIssues
-}
+): JSX.Element[] =>
+  issues.map((issue: string, index: number) => (
+    <CustomCheckBox
+      key={issue + `${index}`}
+      isCondition={true}
+      conditionName={issue}
+      text={issue}
+      handleChecked={handleChecked}
+      handleUnchecked={handleUnchecked}
+    />
+  ))
 
 export const populateSymptoms = (
   conditions: string[],
@@ -59,8 +59,8 @@ export const populateSymptoms = (
   handleChecked: handleCheckAction,
   handleUnchecked: handleCheckAction
 ): void => {
-  // causes inifinite re-render loop at the start
   if (conditions.length === 0) {
+    // causes inifinite re-render loop at the start
     // handleSymptomsCheckboxes([])
     // handleSymptomsAndConditions([])
     return
@@ -105,9 +105,11 @@ export const populateSymptoms = (
               symptomsCheckBoxes={sympsCheckBoxes}
             />
           )
+
           return symptomsAndConditionName
         }
       )
+
       symptomsOfAllIssues.push(symptomsInfo)
     })
 
@@ -170,6 +172,7 @@ export const populateConditions = (
                 <CustomCheckBox
                   isCondition={true}
                   text={IssueName}
+                  conditionName={IssueName}
                   key={IssueName + `${index}`}
                   handleChecked={handleChecked}
                   handleUnchecked={handleUnchecked}

@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Checkbox, FormControlLabel } from "@material-ui/core";
 
-import { handleCheckAction } from "types/medicalForm"
+import { handleCheckAction } from "types/medForm"
 
 interface IProps {
   text: string,
@@ -22,8 +22,10 @@ const CustomCheckBox = (props: IProps): JSX.Element => {
       else handleUnchecked(text, isCondition)
     } else {
       setIsChecked(true);
-      if (conditionName !== undefined) handleChecked(text, isCondition, conditionName)
-      else handleChecked(text, isCondition)
+      if (conditionName !== undefined) {
+        handleChecked(text, isCondition, conditionName)        
+      }
+      else handleChecked(text, isCondition)      
     }
   };
 
