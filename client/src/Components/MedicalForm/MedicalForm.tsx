@@ -21,7 +21,7 @@ import {
 } from "SymptomCheckerApi/mainApi"
 
 // frontend styling
-import logo from "logo.jpg"
+import logo from "./logo.jpg"
 import "./MedicalForm.css"
 
 // To keep the code clean, think about how to separate the symptoms and the condtions logic
@@ -126,7 +126,13 @@ const SexCheckBox = (props: {
 
   return (
     <FormControlLabel
-      control={<Checkbox checked={checked} onChange={handleChecked} style ={{color: "#008bce",}} />}
+      control={
+        <Checkbox
+          checked={checked}
+          onChange={handleChecked}
+          style={{ color: "#008bce" }}
+        />
+      }
       label={gender}
     />
   )
@@ -394,119 +400,122 @@ const MedicalForm = (): JSX.Element => {
   return (
     <React.Fragment>
       {/** Personal Information Card Component Here */}
-      <div className = "formbody">     
-      <img className="headerLogo" src={logo} alt="SouthernCross Logo"/>
-      <br /><br /><br />
-      <div className = "cardmargin">
-      <Grid container={true} alignItems="center" justify="center">
-      <Grid item={true} xs = {12} sm ={12} md = {12}> 
-        <h2 className = "header">
-        Your Details
-        </h2>
-      </Grid></Grid>
-      </div>
-      <div className = "cardmargin">
-      <Grid container={true} alignItems="center" justify="center">
-      <Grid item={true} xs = {12} sm ={12} md = {12}> 
-      <Card>
-        <CardContent>
-          <h2 className="arialFont">Personal Information</h2>
-          <TextField label="First name" />
-            <div className="fill" />
-            <TextField label="Surname" />
-            <div className="fill" />
-          <br />
-          <h3 className="arialFont">Date of Birth</h3>
-          <TextField
-            id="date-outlined-basic"
-            label="day"
-            variant="outlined"
-            onChange={handledateChange}
-            value={date}
-          />{" "}
-          <TextField
-            id="month-outlined-basic"
-            label="month"
-            variant="outlined"
-            onChange={handlemonthChange}
-            value={month}
-          />{" "}
-          <TextField
-            id="year-outlined-basic"
-            label="year"
-            variant="outlined"
-            onChange={handleyearChange}
-            value={year}
-          />
-          <br />
-          <h3 className="arialFont">Biological sex</h3>
-            <SexCheckBox gender="Male" onCheck={handleOnSexChecked} />
-            <SexCheckBox gender="Female" onCheck={handleOnSexChecked} />
-        </CardContent>
-      </Card>
-      </Grid></Grid>
-      </div>
+      <div className="formbody">
+        <img className="headerLogo" src={logo} alt="SouthernCross Logo" />
+        <br />
+        <br />
+        <br />
+        <div className="cardmargin">
+          <Grid container={true} alignItems="center" justify="center">
+            <Grid item={true} xs={12} sm={12} md={12}>
+              <h2 className="header">Your Details</h2>
+            </Grid>
+          </Grid>
+        </div>
+        <div className="cardmargin">
+          <Grid container={true} alignItems="center" justify="center">
+            <Grid item={true} xs={12} sm={12} md={12}>
+              <Card>
+                <CardContent>
+                  <h2 className="arialFont">Personal Information</h2>
+                  <TextField label="First name" />
+                  <div className="fill" />
+                  <TextField label="Surname" />
+                  <div className="fill" />
+                  <br />
+                  <h3 className="arialFont">Date of Birth</h3>
+                  <TextField
+                    id="date-outlined-basic"
+                    label="day"
+                    variant="outlined"
+                    onChange={handledateChange}
+                    value={date}
+                  />{" "}
+                  <TextField
+                    id="month-outlined-basic"
+                    label="month"
+                    variant="outlined"
+                    onChange={handlemonthChange}
+                    value={month}
+                  />{" "}
+                  <TextField
+                    id="year-outlined-basic"
+                    label="year"
+                    variant="outlined"
+                    onChange={handleyearChange}
+                    value={year}
+                  />
+                  <br />
+                  <h3 className="arialFont">Biological sex</h3>
+                  <SexCheckBox gender="Male" onCheck={handleOnSexChecked} />
+                  <SexCheckBox gender="Female" onCheck={handleOnSexChecked} />
+                </CardContent>
+              </Card>
+            </Grid>
+          </Grid>
+        </div>
 
-      <br /><br />
-      <div className = "cardmargin">
-      <Grid container={true} alignItems="center" justify="center">
-      <Grid item={true} xs = {12} sm ={12} md = {12}> 
-        <h2 className = "header">
-        Your Health Condition(s)
-        </h2>
-      </Grid></Grid>
-      </div>
-      
-      {/* Conditions and Symptoms card below */} 
-      <div className = "cardmargin">
-      <Grid container={true} alignItems="center" justify="center">
-      <Grid item={true} xs = {12} sm ={12} md = {12}> 
-      <Card>
-        <CardContent>
-          <div className = "formfont">
-          <h2 className="description">
-            {initialConfirmConditionDescription}
-          </h2>
-          <div className = "centerInitIssue">
-          <div className="horizontallyInitIssue">
-            {getInitialIssues()}
-          </div>
-          </div>
-          <br />
-          {symptomsCheckBoxes}
-          <br />
-          {symptomsAndConditions.length > 0 ? (
-            <h2 className="description">
-              {symptomsConfirmDescription}
-            </h2>
-          ) : null}
-          {symptomsAndConditions}
-          <br />
-          {conditionsCheckBoxes.length > 0 ? (
-            <h2 className="description">
-              {relatedConditionsConfirmDescription}
-            </h2>
-          ) : null}
-          {conditionsCheckBoxes}
-          <div className="button">
-            <CustomButton
-              loadComponent={() => populateSymptoms(conditionsArray)}
-              title="Get Symptoms"
-            />
-          <br />
-          <br />
-            <CustomButton
-              loadComponent={populateConditions}
-              title="Get Related Conditions"
-            />
-          </div>
-          </div>
-        </CardContent>
-      </Card>
-      </Grid></Grid>
-      </div>
-      <br />
-      <br />
+        <br />
+        <br />
+        <div className="cardmargin">
+          <Grid container={true} alignItems="center" justify="center">
+            <Grid item={true} xs={12} sm={12} md={12}>
+              <h2 className="header">Your Health Condition(s)</h2>
+            </Grid>
+          </Grid>
+        </div>
+
+        {/* Conditions and Symptoms card below */}
+        <div className="cardmargin">
+          <Grid container={true} alignItems="center" justify="center">
+            <Grid item={true} xs={12} sm={12} md={12}>
+              <Card>
+                <CardContent>
+                  <div className="formfont">
+                    <h2 className="description">
+                      {initialConfirmConditionDescription}
+                    </h2>
+                    <div className="centerInitIssue">
+                      <div className="horizontallyInitIssue">
+                        {getInitialIssues()}
+                      </div>
+                    </div>
+                    <br />
+                    {symptomsCheckBoxes}
+                    <br />
+                    {symptomsAndConditions.length > 0 ? (
+                      <h2 className="description">
+                        {symptomsConfirmDescription}
+                      </h2>
+                    ) : null}
+                    {symptomsAndConditions}
+                    <br />
+                    {conditionsCheckBoxes.length > 0 ? (
+                      <h2 className="description">
+                        {relatedConditionsConfirmDescription}
+                      </h2>
+                    ) : null}
+                    {conditionsCheckBoxes}
+                    <div className="button">
+                      <CustomButton
+                        loadComponent={() => populateSymptoms(conditionsArray)}
+                        title="Get Symptoms"
+                      />
+                      <br />
+                      <br />
+                      <CustomButton
+                        loadComponent={populateConditions}
+                        title="Get Related Conditions"
+                      />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </Grid>
+          </Grid>
+        </div>
+        <br />
+        <br />
       </div>
     </React.Fragment>
   )
