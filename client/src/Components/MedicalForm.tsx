@@ -467,8 +467,10 @@ const MedicalForm = (): JSX.Element => {
           <h2 className="description">
             {initialConfirmConditionDescription}
           </h2>
-          <div className="horizontallyCenterInitIssue">
+          <div className = "centerInitIssue">
+          <div className="horizontallyInitIssue">
             {getInitialIssues()}
+          </div>
           </div>
           <br />
           {symptomsCheckBoxes}

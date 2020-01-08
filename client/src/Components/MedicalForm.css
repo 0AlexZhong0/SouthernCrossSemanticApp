@@ -49,11 +49,12 @@ body{
   width: 100%;
 }
 
-.horizontallyCenterInitIssue {
-  justify-content: center;
-  display: flex
+.horizontallyInitIssue {
+  display: inline-block;
 }
 
-
+.centerInitIssue{
+  text-align: center;
+}
 
 
