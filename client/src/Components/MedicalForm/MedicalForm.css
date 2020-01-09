@@ -1,14 +1,18 @@
 .arialFont {
-  font-family: Arial, Helvetica, sans-serif
+  font-family: Arial, Helvetica, sans-serif;
 }
 
-.headerLogo {
-  width: 100%;
+body{
+  margin: 0;
 }
 
-.fill {
-  display: inline-block;
-  columns: 40px 1;
+.button {
+  text-align: center;
+}
+
+.cardMargin{
+  padding-left: 15px;
+  padding-right: 15px;
 }
 
 .description {
@@ -16,11 +20,28 @@
   text-align: center;
 }
 
-.horizontallyCenterInitIssue {
-  justify-content: center;
-  display: flex
+.fill {
+  display: inline-block;
+  columns: 40px 1;
 }
 
-.button {
+.formBody{
+  margin: 0;
+  background-image: url(background.jpg);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-attachment: fixed;
+}
+
+.formFont{
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.horizontallyInitIssue {
+  display: inline-block;
+}
+
+.centerInitIssue{
   text-align: center;
 }

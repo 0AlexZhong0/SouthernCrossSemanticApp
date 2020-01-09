@@ -1,0 +1,37 @@
+.arialFont {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.cardMargin {
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+
+.fill {
+  display: inline-block;
+  columns: 40px 1;
+}
+
+.formFont {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.header {
+  background-color: #008bce;
+  font-family: Arial, Helvetica, sans-serif;
+  color: white;
+  margin-bottom: 7px;
+}
+
+.headerLogo {
+  width: 100%;
+}
+
+.horizontallyInitIssue {
+  display: inline-block;
+}
+
+.centerInitIssue {
+  text-align: center;
+}

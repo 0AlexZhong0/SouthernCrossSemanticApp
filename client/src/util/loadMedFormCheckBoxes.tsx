@@ -1,7 +1,6 @@
 import * as React from "react"
 
 import {
-  IIdResponse,
   getIssueInfo,
   getIds,
   diagnoseConditionsFromSymptoms
@@ -50,7 +49,7 @@ export const getInitialIssues = (
     />
   ))
 
-export const populateSymptoms = (
+export const populateSymptoms = async (
   conditions: string[],
   handleSymptomsCheckboxes: React.Dispatch<React.SetStateAction<JSX.Element[]>>,
   handleSymptomsAndConditions: React.Dispatch<
@@ -58,7 +57,7 @@ export const populateSymptoms = (
   >,
   handleChecked: handleCheckAction,
   handleUnchecked: handleCheckAction
-): void => {
+) => {
   if (conditions.length === 0) {
     // causes inifinite re-render loop at the start
     // handleSymptomsCheckboxes([])
@@ -67,57 +66,47 @@ export const populateSymptoms = (
   }
 
   const isIssue: boolean = true
-  const flaskResponse: Promise<any> = getIds(conditions, isIssue)
-  const symptomsOfAllIssues: Promise<JSX.Element>[] = []
-  flaskResponse.then((res: IIdResponse) => {
-    const issue_ids: number[] = res.issue_ids! // non-null assertion
+  const issue_ids: number[] = (await getIds(conditions, isIssue)).issue_ids!
 
-    issue_ids.forEach((issueId: number, index: number) => {
+  const symptomsOfAllIssues: Promise<JSX.Element>[] = issue_ids.map(
+    async (issueId: number, index: number) => {
       /**
        * Aggregate the promise returned by getIssueInfo into an array
        * The promise returns a JSX.Element which has the name of the
        * condition and the related symptoms
        */
-      const symptomsInfo: Promise<JSX.Element> = getIssueInfo(issueId).then(
-        (res: { PossibleSymptoms: string }) => {
-          const possibleSyms: string[] = formatSymptomsAndGetArray(
-            res.PossibleSymptoms
-          )
+      const possibleSymptoms: string = (await getIssueInfo(issueId))
+        .PossibleSymptoms
 
-          const conditionName: string = conditions[index]
-          const sympsCheckBoxes: JSX.Element[] = possibleSyms.map(
-            (sym: string, index: number) => (
-              <CustomCheckBox
-                isCondition={false}
-                text={sym}
-                key={sym + `${index}`}
-                handleChecked={handleChecked}
-                handleUnchecked={handleUnchecked}
-                conditionName={conditionName}
-              />
-            )
-          )
+      const possibleSyms: string[] = formatSymptomsAndGetArray(possibleSymptoms)
 
-          const symptomsAndConditionName: JSX.Element = (
-            <ConditionNameAndRelatedSymptoms
-              key={conditionName + `${index}`}
-              conditionName={conditionName}
-              symptomsCheckBoxes={sympsCheckBoxes}
-            />
-          )
-
-          return symptomsAndConditionName
-        }
+      const conditionName: string = conditions[index]
+      const sympsCheckBoxes: JSX.Element[] = possibleSyms.map(
+        (sym: string, index: number) => (
+          <CustomCheckBox
+            isCondition={false}
+            text={sym}
+            key={sym + `${index}`}
+            handleChecked={handleChecked}
+            handleUnchecked={handleUnchecked}
+            conditionName={conditionName}
+          />
+        )
       )
 
-      symptomsOfAllIssues.push(symptomsInfo)
-    })
+      return (
+        <ConditionNameAndRelatedSymptoms
+          key={conditionName + `${index}`}
+          conditionName={conditionName}
+          symptomsCheckBoxes={sympsCheckBoxes}
+        />
+      )
+    }
+  )
 
-    // A single promise that contains the iterable values of the array of promises
-    Promise.all(symptomsOfAllIssues).then((symsAndConds: JSX.Element[]): void =>
-      handleSymptomsAndConditions(symsAndConds)
-    )
-  })
+  await Promise.all(symptomsOfAllIssues).then((res: JSX.Element[]) =>
+    handleSymptomsAndConditions(res)
+  )
 }
 
 export const populateConditions = (
@@ -135,79 +124,73 @@ export const populateConditions = (
   //   return
   // }
 
-  const relatedConditionsFromSymptoms: Promise<JSX.Element>[] = []
+  // const relatedConditionsFromSymptoms: Promise<JSX.Element>[] = []
   const noDuplicateIssueNameChecker: string[] = []
   /**
    * An iteration, for each condition (i.e Heart Attack), pass the selected symptoms to the
    * diagnose API to generate related conditions
    */
-  Object.keys(symptomsWithConditionAsKey).forEach(
-    (selectedCondition: string) => {
-      // FIXME: sex and birth year hard-coded
-      const diagnoseResult: Promise<IResult[]> = diagnoseConditionsFromSymptoms(
-        symptomsWithConditionAsKey[selectedCondition],
-        "male",
-        2001
+  const relatedConditionsFromSymptoms: Promise<JSX.Element>[] = Object.keys(
+    symptomsWithConditionAsKey
+  ).map(async (selectedCondition: string) => {
+    // FIXME: hard-coded sex and birth year
+    const diagnoseResult: IResult[] = await diagnoseConditionsFromSymptoms(
+      symptomsWithConditionAsKey[selectedCondition],
+      "male",
+      2001
+    )
+
+    const condsCheckBoxes: JSX.Element[] = []
+    // select the top three issue
+    diagnoseResult.slice(0, 3).forEach((issue: IIssue, index: number): void => {
+      const issueName: string = issue.Issue.Name
+      /**
+       * only push the condition if it is not duplicate
+       * checking:
+       * 1. if the related condition has the same name as the condition
+       * 2. if it is a already populated condition (a condition that is on the form)
+       */
+      if (
+        issueName !== selectedCondition &&
+        !noDuplicateIssueNameChecker.includes(issueName) &&
+        !conditionsArray.includes(issueName)
+      ) {
+        condsCheckBoxes.push(
+          <CustomCheckBox
+            isCondition={true}
+            text={issueName}
+            conditionName={issueName}
+            key={issueName + `${index}`}
+            handleChecked={handleChecked}
+            handleUnchecked={handleUnchecked}
+          />
+        )
+
+        noDuplicateIssueNameChecker.push(issueName)
+      } else {
+        // do nothing at this stage
+      }
+    })
+
+    // no related condtions have been found according to the
+    // symptoms of the selected conditions
+    if (condsCheckBoxes.length === 0)
+      return (
+        <ConditionNameWithNoRelatedConditions
+          key={selectedCondition}
+          conditionName={selectedCondition}
+        />
       )
-
-      const relatedConditionPromise: Promise<JSX.Element> = diagnoseResult.then(
-        (res: IResult[]): JSX.Element => {
-          const condsCheckBoxes: JSX.Element[] = []
-          // select the top three issue
-          res.slice(0, 3).forEach((issue: IIssue, index: number): void => {
-            const IssueName: string = issue.Issue.Name
-            /**
-             * only push in the condition if it is not duplicate
-             * checking:
-             * 1. if the related condition has the same name as the condition
-             * 2. if it is a already populated condition (a condition that is on the form)
-             */
-            if (
-              IssueName !== selectedCondition &&
-              !noDuplicateIssueNameChecker.includes(IssueName) &&
-              !conditionsArray.includes(IssueName)
-            ) {
-              condsCheckBoxes.push(
-                <CustomCheckBox
-                  isCondition={true}
-                  text={IssueName}
-                  conditionName={IssueName}
-                  key={IssueName + `${index}`}
-                  handleChecked={handleChecked}
-                  handleUnchecked={handleUnchecked}
-                />
-              )
-
-              noDuplicateIssueNameChecker.push(IssueName)
-            } else {
-              // do nothing at this stage
-            }
-          })
-
-          // no related condtions have been found according to the symptoms of the selected conditions
-          if (condsCheckBoxes.length === 0) {
-            const noRelatedConditions: JSX.Element = (
-              <ConditionNameWithNoRelatedConditions
-                key={selectedCondition}
-                conditionName={selectedCondition}
-              />
-            )
-            return noRelatedConditions
-          } else {
-            const relatedCondition: JSX.Element = (
-              <ConditionNameAndRelatedConditions
-                key={selectedCondition}
-                conditionName={selectedCondition}
-                conditionCheckBoxes={condsCheckBoxes}
-              />
-            )
-            return relatedCondition
-          }
-        }
+    // related conditions found
+    else
+      return (
+        <ConditionNameAndRelatedConditions
+          key={selectedCondition}
+          conditionName={selectedCondition}
+          conditionCheckBoxes={condsCheckBoxes}
+        />
       )
-      relatedConditionsFromSymptoms.push(relatedConditionPromise)
-    }
-  )
+  })
 
   Promise.all(relatedConditionsFromSymptoms).then(
     (relatedConditions: JSX.Element[]): void => {

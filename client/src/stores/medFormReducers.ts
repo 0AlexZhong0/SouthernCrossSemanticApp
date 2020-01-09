@@ -14,7 +14,6 @@ export const symsCondsMapReducer = (
   const symptom: string = action.payload!.symptom
   switch (action.type) {
     case "pushSymptom":
-      console.log("Pushing ...")
       if (!(conditionName in mapState))
         return { ...mapState, [conditionName]: [symptom] }
       else
@@ -23,7 +22,11 @@ export const symsCondsMapReducer = (
           [conditionName]: [...mapState[conditionName], symptom]
         }
     case "removeSymptom":
-      if (mapState[conditionName!].length === 1) return {}
+      if (mapState[conditionName].length === 1) {
+        const cloneMap = {...mapState}
+        delete cloneMap[conditionName]
+        return cloneMap
+      }
       else
         return {
           ...mapState,
