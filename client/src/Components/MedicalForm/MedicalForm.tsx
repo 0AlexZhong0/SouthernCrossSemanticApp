@@ -50,6 +50,7 @@ const MedicalForm = (): JSX.Element => {
     conditionsArrayReducer,
     []
   )
+
   const [symptomsAndConditions, setSymptomsAndConditions] = React.useState(
     [] as JSX.Element[]
   )
@@ -62,6 +63,7 @@ const MedicalForm = (): JSX.Element => {
 
   // FIXME: the symsCondsMap object indefinitely gets updated, figure out why
   // same with the conditionsArry object, it only works for the initial issues checkbox
+
   const handleChecked = (
     val: string,
     isCondition: boolean,
@@ -78,6 +80,7 @@ const MedicalForm = (): JSX.Element => {
   }
 
   // FIXME: directly mutating the state
+
   const handleUnchecked = (
     val: string,
     isCondition: boolean,
@@ -163,6 +166,7 @@ const MedicalForm = (): JSX.Element => {
                             handleUnchecked
                           )
                         }
+
                         title="Get Symptoms"
                       />
                       <br />
@@ -177,6 +181,7 @@ const MedicalForm = (): JSX.Element => {
                             handleUnchecked
                           )
                         }
+
                         title="Get Related Conditions"
                       />
                     </div>
