@@ -37,7 +37,7 @@ import "./MedicalForm.css"
 const initIssues: string[] = [
   "Heart attack",
   "Hernia",
-  "Abortion",
+  "Kidney stones",
   "Urinary tract infection"
 ]
 
