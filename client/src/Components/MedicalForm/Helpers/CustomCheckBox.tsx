@@ -1,11 +1,13 @@
 import * as React from "react";
 import { Checkbox, FormControlLabel } from "@material-ui/core";
 
+import { handleCheckAction } from "types/medForm"
+
 interface IProps {
   text: string,
   isCondition: boolean,
-  handleChecked: (val: string, isCondition: boolean, conditionName?: string) => void,
-  handleUnchecked: (val: string, isCondition: boolean, conditionName?: string) => void,
+  handleChecked: handleCheckAction
+  handleUnchecked: handleCheckAction,
   conditionName?: string
 }
 
@@ -20,13 +22,14 @@ const CustomCheckBox = (props: IProps): JSX.Element => {
       else handleUnchecked(text, isCondition)
     } else {
       setIsChecked(true);
-      if (conditionName !== undefined) handleChecked(text, isCondition, conditionName)
-      else handleChecked(text, isCondition)
+      if (conditionName !== undefined) {
+        handleChecked(text, isCondition, conditionName)        
+      }
+      else handleChecked(text, isCondition)      
     }
   };
 
   return (
-    // Populate checkboxes with all the possible conditions
     <FormControlLabel
       control={
         <Checkbox checked={isChecked} onChange={tickOrUntick} style ={{color: "#008bce",}}/>

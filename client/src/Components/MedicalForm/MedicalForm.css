@@ -10,7 +10,8 @@ body{
   text-align: center;
 }
 
-.cardmargin{
+
+.cardMargin{
   padding-left: 15px;
   padding-right: 15px;
 }
@@ -38,16 +39,6 @@ body{
   font-family: Arial, Helvetica, sans-serif;
 }
 
-.header{
-  background-color: #008bce;
-  font-family: Arial, Helvetica, sans-serif;
-  color: white;
-  margin-bottom:7px;
-}
-
-.headerLogo {
-  width: 100%;
-}
 
 .horizontallyInitIssue {
   display: inline-block;
@@ -56,5 +47,3 @@ body{
 .centerInitIssue{
   text-align: center;
 }
-
-
