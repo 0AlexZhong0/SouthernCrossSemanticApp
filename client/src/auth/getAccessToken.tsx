@@ -6,8 +6,8 @@ const getAccessToken = (): Promise<any> => {
   const login_uri: string = AUTH_BASE_URL + "/login"
 
   // keep cred secure in an .env file
-  const api_key: string = "919805935@qq.com" // the username to access the api
-  const secret_key: string = "s6D4Mbg3A9KaZo72L" // corresponding password to access the api
+  const api_key: string = "YOUR_USERNAME" // the username to access the api
+  const secret_key: string = "YOUR_PASSWORD" // corresponding password to access the api
   const hashed_credentials: string = getHashedCredString(login_uri, secret_key)
   const methods = {
     method: "POST",
