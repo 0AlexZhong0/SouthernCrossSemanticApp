@@ -1,8 +1,5 @@
 // following the typed arguments for fetch
-const requests = (
-  uri: string,
-  init?: RequestInit | undefined
-): Promise<Response> => {
+const requests = (uri: string, init?: RequestInit | undefined): Promise<Response> => {
   // default is a GET request
   const apiPromise = fetch(uri, init)
     .then(
@@ -24,6 +21,7 @@ const requests = (
   return apiPromise;
 };
 
+// change the endpoint to the real ones
 export const AUTH_BASE_URL = "https://sandbox-authservice.priaid.ch";
-export const HEALTH_BASE_URL = "https://sandbox-healthservice.priaid.ch"
+export const HEALTH_BASE_URL = "https://sandbox-healthservice.priaid.ch";
 export default requests;
