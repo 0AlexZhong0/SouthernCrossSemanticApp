@@ -29,6 +29,16 @@ import { symsCondsMapReducer, conditionsArrayReducer } from "stores/medFormReduc
 
 // frontend styling
 import "./MedicalForm.css";
+import { handleCheckAction } from "types/medForm";
+
+type ISymptomsCheckBox = {
+  displayText: string;
+  conditionName: string;
+};
+
+type ISymptomsOfCondition = ISymptomsCheckBox;
+
+type IRelatedConditions = {};
 
 // store the issues somewhere
 const initIssues: string[] = ["Heart attack", "Hernia", "Kidney stones", "Urinary tract infection"];
@@ -37,34 +47,28 @@ const MedicalForm = (): JSX.Element => {
   const [symsCondsMap, symsCondsMapDispatch] = React.useReducer(symsCondsMapReducer, {});
   const [conditionsArray, condsArrDispatch] = React.useReducer(conditionsArrayReducer, []);
 
-  const [symptomsAndConditions, setSymptomsAndConditions] = React.useState([] as JSX.Element[]);
-  const [symptomsCheckBoxes, setSymptomsCheckBoxes] = React.useState([] as JSX.Element[]);
+  const [symptomsCheckBoxes, setSymptomsCheckBoxes] = React.useState<ISymptomsCheckBox[]>();
+  const [symptomsAndConditions, setSymptomsAndConditions] = React.useState<IConditionsOfSymptom>();
   const [conditionsCheckBoxes, setConditionsCheckBoxes] = React.useState([] as JSX.Element[]);
 
   // FIXME: the symsCondsMap object indefinitely gets updated, figure out why
   // same with the conditionsArry object, it only works for the initial issues checkbox
 
-  const handleChecked = (val: string, isCondition: boolean, conditionName?: string): void => {
-    if (isCondition) {
-      condsArrDispatch({ type: "pushCondition", condition: conditionName! });
+  const handleOnCheck: handleCheckAction = (symptom, isCondition, conditionName, type) => {
+    if (type === "push") {
+      if (isCondition) condsArrDispatch({ type: "pushCondition", condition: conditionName });
+      else
+        symsCondsMapDispatch({
+          type: "pushSymptom",
+          payload: { conditionName, symptom }
+        });
     } else {
-      symsCondsMapDispatch({
-        type: "pushSymptom",
-        payload: { conditionName: conditionName!, symptom: val }
-      });
-    }
-  };
-
-  // FIXME: directly mutating the state
-
-  const handleUnchecked = (val: string, isCondition: boolean, conditionName?: string): void => {
-    if (isCondition) {
-      condsArrDispatch({ type: "removeCondition", condition: conditionName! });
-    } else {
-      symsCondsMapDispatch({
-        type: "removeSymptom",
-        payload: { conditionName: conditionName!, symptom: val }
-      });
+      if (isCondition) condsArrDispatch({ type: "removeCondition", condition: conditionName });
+      else
+        symsCondsMapDispatch({
+          type: "removeSymptom",
+          payload: { conditionName, symptom }
+        });
     }
   };
 
@@ -102,7 +106,7 @@ const MedicalForm = (): JSX.Element => {
                     <h2 className="description">{initialConfirmConditionDescription}</h2>
                     <div className="centerInitIssue">
                       <div className="horizontallyCenterInitIssue">
-                        {getInitialIssues(initIssues, handleChecked, handleUnchecked)}
+                        {getInitialIssues(initIssues, handleOnCheck)}
                       </div>
                     </div>
                     <br />
@@ -124,8 +128,7 @@ const MedicalForm = (): JSX.Element => {
                             conditionsArray,
                             setSymptomsCheckBoxes,
                             setSymptomsAndConditions,
-                            handleChecked,
-                            handleUnchecked
+                            handleOnCheck
                           )
                         }
                         title="Get Symptoms"
@@ -138,8 +141,7 @@ const MedicalForm = (): JSX.Element => {
                             symsCondsMap,
                             conditionsArray,
                             setConditionsCheckBoxes,
-                            handleChecked,
-                            handleUnchecked
+                            handleOnCheck
                           )
                         }
                         title="Get Related Conditions"

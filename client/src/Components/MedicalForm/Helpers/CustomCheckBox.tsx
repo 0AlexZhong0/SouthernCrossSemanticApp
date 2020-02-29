@@ -1,40 +1,40 @@
 import * as React from "react";
 import { Checkbox, FormControlLabel } from "@material-ui/core";
 
-import { handleCheckAction } from "types/medForm"
+import { handleCheckAction } from "types/medForm";
 
-interface IProps {
-  text: string,
-  isCondition: boolean,
-  handleChecked: handleCheckAction
-  handleUnchecked: handleCheckAction,
-  conditionName?: string
+interface ICustomCheckBoxProps {
+  displayText: string;
+  isCondition: boolean;
+  handleOnCheck: handleCheckAction;
+  conditionName: string;
 }
 
-const CustomCheckBox = (props: IProps): JSX.Element => {
+const CustomCheckBox = (props: ICustomCheckBoxProps): JSX.Element => {
   // also change the state so that the app knows what are the conditions that got populated
-  const { text, isCondition, handleChecked, handleUnchecked, conditionName } = props
+  const { displayText, isCondition, handleOnCheck, conditionName } = props;
   const [isChecked, setIsChecked] = React.useState(false);
-  const tickOrUntick = (): void => {
+
+  const handleOnCheckBoxChange = (): void => {
     if (isChecked) {
       setIsChecked(false);
-      if (conditionName !== undefined) handleUnchecked(text, isCondition, conditionName)
-      else handleUnchecked(text, isCondition)
+      handleOnCheck(displayText, isCondition, conditionName, "push");
     } else {
       setIsChecked(true);
-      if (conditionName !== undefined) {
-        handleChecked(text, isCondition, conditionName)        
-      }
-      else handleChecked(text, isCondition)      
+      handleOnCheck(displayText, isCondition, conditionName, "remove");
     }
   };
 
   return (
     <FormControlLabel
       control={
-        <Checkbox checked={isChecked} onChange={tickOrUntick} style ={{color: "#008bce",}}/>
+        <Checkbox
+          checked={isChecked}
+          onChange={handleOnCheckBoxChange}
+          style={{ color: "#008bce" }}
+        />
       }
-      label={text}
+      label={displayText}
     />
   );
 };

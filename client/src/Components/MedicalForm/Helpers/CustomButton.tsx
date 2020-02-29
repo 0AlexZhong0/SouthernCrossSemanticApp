@@ -1,9 +1,9 @@
-import * as React from "react"
-import { Button } from "@material-ui/core"
+import * as React from "react";
+import { Button } from "@material-ui/core";
 
 interface IProps {
-  loadComponent: () => void
-  title: string
+  loadComponent: () => void;
+  title: string;
 }
 
 const CustomButton = (props: IProps): JSX.Element => {
@@ -15,7 +15,7 @@ const CustomButton = (props: IProps): JSX.Element => {
     >
       {props.title}
     </Button>
-  )
-}
+  );
+};
 
-export default CustomButton
+export default CustomButton;

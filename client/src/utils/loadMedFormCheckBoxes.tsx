@@ -32,24 +32,21 @@ const formatSymptomsAndGetArray = (possibleSymptoms: string): string[] => {
 
 export const getInitialIssues = (
   issues: string[],
-  handleChecked: handleCheckAction,
-  handleUnchecked: handleCheckAction
+  handleOnCheck: handleCheckAction
 ): JSX.Element[] =>
   issues.map((issue: string, index: number) => (
     <CustomCheckBox
       key={issue + `${index}`}
       isCondition={true}
       conditionName={issue}
-      text={issue}
-      handleChecked={handleChecked}
-      handleUnchecked={handleUnchecked}
+      displayText={issue}
+      handleOnCheck={handleOnCheck}
     />
   ));
 
 const getSymptomsOfAllIssues = (
   conditions: string[],
-  handleChecked: handleCheckAction,
-  handleUnchecked: handleCheckAction,
+  handleOnCheck: handleCheckAction,
   issueIds: number[]
 ) => {
   const symptoms: JSX.Element[] = [];
@@ -68,10 +65,9 @@ const getSymptomsOfAllIssues = (
       const sympsCheckBoxes: JSX.Element[] = possibleSyms.map((sym: string, index: number) => (
         <CustomCheckBox
           isCondition={false}
-          text={sym}
+          displayText={sym}
           key={sym + `${index}`}
-          handleChecked={handleChecked}
-          handleUnchecked={handleUnchecked}
+          handleOnCheck={handleOnCheck}
           conditionName={conditionName}
         />
       ));
@@ -96,8 +92,7 @@ export const populateSymptoms = async (
   conditions: string[],
   handleSymptomsCheckboxes: React.Dispatch<React.SetStateAction<JSX.Element[]>>,
   handleSymptomsAndConditions: React.Dispatch<React.SetStateAction<JSX.Element[]>>,
-  handleChecked: handleCheckAction,
-  handleUnchecked: handleCheckAction
+  handleOnCheck: handleCheckAction
 ) => {
   if (conditions.length === 0) {
     // causes inifinite re-render loop at the start
@@ -107,15 +102,11 @@ export const populateSymptoms = async (
   }
 
   const isIssue: boolean = true;
+  console.log("I am here");
 
   try {
     const ids = await getIds(conditions, isIssue);
-    const symptomsOfAllIssues = getSymptomsOfAllIssues(
-      conditions,
-      handleChecked,
-      handleUnchecked,
-      ids.issue_ids!
-    );
+    const symptomsOfAllIssues = getSymptomsOfAllIssues(conditions, handleOnCheck, ids.issue_ids!);
 
     handleSymptomsAndConditions(symptomsOfAllIssues);
   } catch (e) {
@@ -128,8 +119,7 @@ export const populateConditions = (
   symptomsWithConditionAsKey: symsCondMapType,
   conditionsArray: string[],
   handleConditionsCheckBoxes: React.Dispatch<React.SetStateAction<JSX.Element[]>>,
-  handleChecked: handleCheckAction,
-  handleUnchecked: handleCheckAction
+  handleOnCheck: handleCheckAction
 ): void => {
   // FIXME: have not yet figured out how to handle the error in my existing promise
   // if (sex === "" || year === "") {
@@ -171,11 +161,10 @@ export const populateConditions = (
         condsCheckBoxes.push(
           <CustomCheckBox
             isCondition={true}
-            text={issueName}
+            displayText={issueName}
             conditionName={issueName}
             key={issueName + `${index}`}
-            handleChecked={handleChecked}
-            handleUnchecked={handleUnchecked}
+            handleOnCheck={handleOnCheck}
           />
         );
 
