@@ -30,29 +30,31 @@ import { symsCondsMapReducer, conditionsArrayReducer } from "stores/medFormReduc
 // frontend styling
 import "./MedicalForm.css";
 import { handleCheckAction } from "types/medForm";
+import CustomCheckBox from "./Helpers/CustomCheckBox";
 
-type ISymptomsCheckBox = {
-  displayText: string;
+export type ISymptomsOfCondition = {
+  symptoms: string[];
   conditionName: string;
 };
 
-type ISymptomsOfCondition = ISymptomsCheckBox;
-
-type IRelatedConditions = {};
+export type IRelatedConditionsOfSymptoms = {
+  conditionNames: string[];
+  selectedCondition: string;
+};
 
 // store the issues somewhere
 const initIssues: string[] = ["Heart attack", "Hernia", "Kidney stones", "Urinary tract infection"];
 
 const MedicalForm = (): JSX.Element => {
+  // FIXME: the symsCondsMap object indefinitely gets updated, figure out why
+  // same with the conditionsArry object, it only works for the initial issues checkbox
   const [symsCondsMap, symsCondsMapDispatch] = React.useReducer(symsCondsMapReducer, {});
   const [conditionsArray, condsArrDispatch] = React.useReducer(conditionsArrayReducer, []);
 
-  const [symptomsCheckBoxes, setSymptomsCheckBoxes] = React.useState<ISymptomsCheckBox[]>();
-  const [symptomsAndConditions, setSymptomsAndConditions] = React.useState<IConditionsOfSymptom>();
-  const [conditionsCheckBoxes, setConditionsCheckBoxes] = React.useState([] as JSX.Element[]);
-
-  // FIXME: the symsCondsMap object indefinitely gets updated, figure out why
-  // same with the conditionsArry object, it only works for the initial issues checkbox
+  const [symptomsOfCondition, setSymptomsOfCondition] = React.useState<ISymptomsOfCondition[]>();
+  const [relatedConditions, setRelatedConditions] = React.useState<
+    IRelatedConditionsOfSymptoms[]
+  >();
 
   const handleOnCheck: handleCheckAction = (symptom, isCondition, conditionName, type) => {
     if (type === "push") {
@@ -72,8 +74,12 @@ const MedicalForm = (): JSX.Element => {
     }
   };
 
-  // TODO: the two get conditions and symptoms buttons can be separated to distinct components
-  // think about how to layer it out more distinctively
+  const handleOnGetSymptomsOfCondition = (conditionSymptomns: ISymptomsOfCondition[]) =>
+    setSymptomsOfCondition(conditionSymptomns);
+
+  const handleOnGetRelatedConditions = (relatedConds: IRelatedConditionsOfSymptoms[]) =>
+    setRelatedConditions(relatedConds);
+
   return (
     <React.Fragment>
       <div className="formBody">
@@ -109,25 +115,65 @@ const MedicalForm = (): JSX.Element => {
                         {getInitialIssues(initIssues, handleOnCheck)}
                       </div>
                     </div>
-                    <br />
-                    {symptomsCheckBoxes}
-                    <br />
-                    {symptomsAndConditions.length > 0 ? (
-                      <h2 className="description">{symptomsConfirmDescription}</h2>
+
+                    {symptomsOfCondition && symptomsOfCondition.length > 0 ? (
+                      <div>
+                        <h2 className="description">{symptomsConfirmDescription}</h2>
+                        {symptomsOfCondition.map(data => {
+                          const { conditionName, symptoms } = data;
+
+                          return (
+                            <div>
+                              <strong>{`Related conditions below, based on your symptoms of ${conditionName}`}</strong>
+                              <br />
+                              {symptoms.map(symptom => (
+                                <CustomCheckBox
+                                  displayText={symptom}
+                                  isCondition={false}
+                                  handleOnCheck={handleOnCheck}
+                                  conditionName={conditionName}
+                                />
+                              ))}
+                            </div>
+                          );
+                        })}
+                      </div>
                     ) : null}
-                    {symptomsAndConditions}
+
                     <br />
-                    {conditionsCheckBoxes.length > 0 ? (
-                      <h2 className="description">{relatedConditionsConfirmDescription}</h2>
+
+                    {relatedConditions && relatedConditions.length > 0 ? (
+                      <div>
+                        <h2 className="description">{relatedConditionsConfirmDescription}</h2>
+                        {relatedConditions.map(data => {
+                          const { conditionNames, selectedCondition } = data;
+
+                          return conditionNames.length > 0 ? (
+                            <div>
+                              <strong>{`Related conditions below, based on your symptoms of ${selectedCondition}`}</strong>
+                              <br />
+                              {conditionNames.map(condition => (
+                                <CustomCheckBox
+                                  displayText={condition}
+                                  isCondition={true}
+                                  handleOnCheck={handleOnCheck}
+                                  conditionName={condition}
+                                />
+                              ))}
+                            </div>
+                          ) : (
+                            <strong>{`No related conditions of ${selectedCondition} found`}</strong>
+                          );
+                        })}
+                      </div>
                     ) : null}
-                    {conditionsCheckBoxes}
+
                     <div className="button">
                       <CustomButton
                         loadComponent={() =>
                           populateSymptoms(
                             conditionsArray,
-                            setSymptomsCheckBoxes,
-                            setSymptomsAndConditions,
+                            handleOnGetSymptomsOfCondition,
                             handleOnCheck
                           )
                         }
@@ -140,7 +186,7 @@ const MedicalForm = (): JSX.Element => {
                           populateConditions(
                             symsCondsMap,
                             conditionsArray,
-                            setConditionsCheckBoxes,
+                            handleOnGetRelatedConditions,
                             handleOnCheck
                           )
                         }
