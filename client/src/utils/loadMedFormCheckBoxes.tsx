@@ -1,37 +1,34 @@
-import * as React from "react"
+import * as React from "react";
 
 import {
   getIssueInfo,
   getIds,
-  diagnoseConditionsFromSymptoms
-} from "SymptomCheckerApi/mainApi"
-import CustomCheckBox from "Components/MedicalForm/Helpers/CustomCheckBox"
+  diagnoseConditionsFromSymptoms,
+  InvalidFlaskResponseError
+} from "SymptomCheckerApi/mainApi";
+import CustomCheckBox from "Components/MedicalForm/Helpers/CustomCheckBox";
 import {
   ConditionNameAndRelatedSymptoms,
   ConditionNameWithNoRelatedConditions,
   ConditionNameAndRelatedConditions
-} from "Components/MedicalForm/actionInfoDisplay/actionInfoDisplay"
-import {
-  IResult,
-  IIssue,
-  symsCondMapType,
-  handleCheckAction
-} from "types/medForm"
+} from "Components/MedicalForm/actionInfoDisplay/actionInfoDisplay";
+import { IResult, IIssue, symsCondMapType, handleCheckAction } from "types/medForm";
+import { InvalidCredentialError } from "auth/getAccessToken";
 
 // think about the possible ways of converting the code below using a reducer
 const formatSymptomsAndGetArray = (possibleSymptoms: string): string[] => {
   // very inefficent way of sorting the words
   // have something like "unconciousness, short" as one symptom in the list of symptoms
   // want to keep as a whole, instead of splitting it to "unconciousness" and " short" separately
-  const possibleSyms: string[] = []
-  const initSyms: string = possibleSymptoms.replace(", ", ";")
-  const initSymsArr: string[] = initSyms.split(",")
+  const possibleSyms: string[] = [];
+  const initSyms: string = possibleSymptoms.replace(", ", ";");
+  const initSymsArr: string[] = initSyms.split(",");
   initSymsArr.forEach((sym: string): void => {
-    if (sym.includes(";")) sym = sym.replace(";", ", ")
-    possibleSyms.push(sym)
-  })
-  return possibleSyms
-}
+    if (sym.includes(";")) sym = sym.replace(";", ", ");
+    possibleSyms.push(sym);
+  });
+  return possibleSyms;
+};
 
 export const getInitialIssues = (
   issues: string[],
@@ -47,14 +44,58 @@ export const getInitialIssues = (
       handleChecked={handleChecked}
       handleUnchecked={handleUnchecked}
     />
-  ))
+  ));
+
+const getSymptomsOfAllIssues = (
+  conditions: string[],
+  handleChecked: handleCheckAction,
+  handleUnchecked: handleCheckAction,
+  issueIds: number[]
+) => {
+  const symptoms: JSX.Element[] = [];
+  issueIds.forEach(async (issueId: number, index: number) => {
+    /**
+     * Aggregate the promise returned by getIssueInfo into an array. The promise returns
+     * a JSX.Element which has the name of the condition and the related symptoms
+     */
+
+    try {
+      const possibleSymptoms: string = (await getIssueInfo(issueId)).PossibleSymptoms;
+
+      const possibleSyms: string[] = formatSymptomsAndGetArray(possibleSymptoms);
+
+      const conditionName: string = conditions[index];
+      const sympsCheckBoxes: JSX.Element[] = possibleSyms.map((sym: string, index: number) => (
+        <CustomCheckBox
+          isCondition={false}
+          text={sym}
+          key={sym + `${index}`}
+          handleChecked={handleChecked}
+          handleUnchecked={handleUnchecked}
+          conditionName={conditionName}
+        />
+      ));
+
+      symptoms.push(
+        <ConditionNameAndRelatedSymptoms
+          key={conditionName + `${index}`}
+          conditionName={conditionName}
+          symptomsCheckBoxes={sympsCheckBoxes}
+        />
+      );
+    } catch (e) {
+      if (e instanceof InvalidCredentialError) console.log(`Gracefully handled ${e.message}`);
+      else throw e;
+    }
+  });
+
+  return symptoms;
+};
 
 export const populateSymptoms = async (
   conditions: string[],
   handleSymptomsCheckboxes: React.Dispatch<React.SetStateAction<JSX.Element[]>>,
-  handleSymptomsAndConditions: React.Dispatch<
-    React.SetStateAction<JSX.Element[]>
-  >,
+  handleSymptomsAndConditions: React.Dispatch<React.SetStateAction<JSX.Element[]>>,
   handleChecked: handleCheckAction,
   handleUnchecked: handleCheckAction
 ) => {
@@ -62,59 +103,31 @@ export const populateSymptoms = async (
     // causes inifinite re-render loop at the start
     // handleSymptomsCheckboxes([])
     // handleSymptomsAndConditions([])
-    return
+    return;
   }
 
-  const isIssue: boolean = true
-  const issue_ids: number[] = (await getIds(conditions, isIssue)).issue_ids!
+  const isIssue: boolean = true;
 
-  const symptomsOfAllIssues: Promise<JSX.Element>[] = issue_ids.map(
-    async (issueId: number, index: number) => {
-      /**
-       * Aggregate the promise returned by getIssueInfo into an array
-       * The promise returns a JSX.Element which has the name of the
-       * condition and the related symptoms
-       */
-      const possibleSymptoms: string = (await getIssueInfo(issueId))
-        .PossibleSymptoms
+  try {
+    const ids = await getIds(conditions, isIssue);
+    const symptomsOfAllIssues = getSymptomsOfAllIssues(
+      conditions,
+      handleChecked,
+      handleUnchecked,
+      ids.issue_ids!
+    );
 
-      const possibleSyms: string[] = formatSymptomsAndGetArray(possibleSymptoms)
-
-      const conditionName: string = conditions[index]
-      const sympsCheckBoxes: JSX.Element[] = possibleSyms.map(
-        (sym: string, index: number) => (
-          <CustomCheckBox
-            isCondition={false}
-            text={sym}
-            key={sym + `${index}`}
-            handleChecked={handleChecked}
-            handleUnchecked={handleUnchecked}
-            conditionName={conditionName}
-          />
-        )
-      )
-
-      return (
-        <ConditionNameAndRelatedSymptoms
-          key={conditionName + `${index}`}
-          conditionName={conditionName}
-          symptomsCheckBoxes={sympsCheckBoxes}
-        />
-      )
-    }
-  )
-
-  await Promise.all(symptomsOfAllIssues).then((res: JSX.Element[]) =>
-    handleSymptomsAndConditions(res)
-  )
-}
+    handleSymptomsAndConditions(symptomsOfAllIssues);
+  } catch (e) {
+    if (e instanceof InvalidFlaskResponseError) alert(e.message);
+    else throw e;
+  }
+};
 
 export const populateConditions = (
   symptomsWithConditionAsKey: symsCondMapType,
   conditionsArray: string[],
-  handleConditionsCheckBoxes: React.Dispatch<
-    React.SetStateAction<JSX.Element[]>
-  >,
+  handleConditionsCheckBoxes: React.Dispatch<React.SetStateAction<JSX.Element[]>>,
   handleChecked: handleCheckAction,
   handleUnchecked: handleCheckAction
 ): void => {
@@ -125,7 +138,7 @@ export const populateConditions = (
   // }
 
   // const relatedConditionsFromSymptoms: Promise<JSX.Element>[] = []
-  const noDuplicateIssueNameChecker: string[] = []
+  const noDuplicateIssueNameChecker: string[] = [];
   /**
    * An iteration, for each condition (i.e Heart Attack), pass the selected symptoms to the
    * diagnose API to generate related conditions
@@ -138,12 +151,12 @@ export const populateConditions = (
       symptomsWithConditionAsKey[selectedCondition],
       "male",
       2001
-    )
+    );
 
-    const condsCheckBoxes: JSX.Element[] = []
+    const condsCheckBoxes: JSX.Element[] = [];
     // select the top three issue
     diagnoseResult.slice(0, 3).forEach((issue: IIssue, index: number): void => {
-      const issueName: string = issue.Issue.Name
+      const issueName: string = issue.Issue.Name;
       /**
        * only push the condition if it is not duplicate
        * checking:
@@ -164,13 +177,13 @@ export const populateConditions = (
             handleChecked={handleChecked}
             handleUnchecked={handleUnchecked}
           />
-        )
+        );
 
-        noDuplicateIssueNameChecker.push(issueName)
+        noDuplicateIssueNameChecker.push(issueName);
       } else {
         // do nothing at this stage
       }
-    })
+    });
 
     // no related condtions have been found according to the
     // symptoms of the selected conditions
@@ -180,7 +193,7 @@ export const populateConditions = (
           key={selectedCondition}
           conditionName={selectedCondition}
         />
-      )
+      );
     // related conditions found
     else
       return (
@@ -189,12 +202,10 @@ export const populateConditions = (
           conditionName={selectedCondition}
           conditionCheckBoxes={condsCheckBoxes}
         />
-      )
-  })
+      );
+  });
 
-  Promise.all(relatedConditionsFromSymptoms).then(
-    (relatedConditions: JSX.Element[]): void => {
-      handleConditionsCheckBoxes(relatedConditions)
-    }
-  )
-}
+  Promise.all(relatedConditionsFromSymptoms).then((relatedConditions: JSX.Element[]): void => {
+    handleConditionsCheckBoxes(relatedConditions);
+  });
+};
