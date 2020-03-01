@@ -49,18 +49,21 @@ export const getInitialIssues = (
     />
   ));
 
-const getSymptomsOfAllIssues = (conditions: string[], issueIds: number[]) => {
-  const symptoms: ISymptomsOfCondition[] = [];
-  issueIds.forEach(async (issueId: number, index: number) => {
+const getSymptomsOfAllConditions = (conditions: string[], issueIds: number[]) => {
+  const symptoms = issueIds.map(async (issueId: number, index: number) => {
     try {
       const possibleSymptoms: string[] = formatSymptomsAndGetArray(
         (await getIssueInfo(issueId)).PossibleSymptoms
       );
       const conditionName: string = conditions[index];
-      symptoms.push({ symptoms: possibleSymptoms, conditionName });
+
+      return { symptoms: possibleSymptoms, conditionName };
     } catch (e) {
-      if (e instanceof InvalidCredentialError) console.log(`Gracefully handled ${e.message}`);
-      else throw e;
+      // two throw statements so the program will stop executing the map function and no undefined objects are returned
+      if (e instanceof InvalidCredentialError) {
+        console.log(`Gracefully handled ${e.message}`);
+        throw e;
+      } else throw e;
     }
   });
 
@@ -69,8 +72,7 @@ const getSymptomsOfAllIssues = (conditions: string[], issueIds: number[]) => {
 
 export const populateSymptoms = async (
   conditions: string[],
-  onGetSymptomsOfConditions: (conditionSymptomns: ISymptomsOfCondition[]) => void,
-  handleOnCheck: handleCheckAction
+  onGetSymptomsOfConditions: (conditionSymptomns: ISymptomsOfCondition[]) => void
 ) => {
   if (conditions.length === 0) {
     return;
@@ -80,7 +82,9 @@ export const populateSymptoms = async (
 
   try {
     const ids = await getIds(conditions, isIssue);
-    const symptomsOfAllIssues = getSymptomsOfAllIssues(conditions, ids.issue_ids!);
+    const symptomsOfAllIssues = await Promise.all(
+      getSymptomsOfAllConditions(conditions, ids.issue_ids!)
+    );
 
     onGetSymptomsOfConditions(symptomsOfAllIssues);
   } catch (e) {
@@ -92,8 +96,7 @@ export const populateSymptoms = async (
 export const populateConditions = (
   symptomsWithConditionAsKey: symsCondMapType,
   conditionsArray: string[],
-  onGetRelatedConditions: (relatedConds: IRelatedConditionsOfSymptoms[]) => void,
-  handleOnCheck: handleCheckAction
+  onGetRelatedConditions: (relatedConds: IRelatedConditionsOfSymptoms[]) => void
 ): void => {
   // FIXME: have not yet figured out how to handle the error in my existing promise
   // if (sex === "" || year === "") {

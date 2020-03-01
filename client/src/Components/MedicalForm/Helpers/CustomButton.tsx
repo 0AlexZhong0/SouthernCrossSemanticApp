@@ -1,12 +1,12 @@
 import * as React from "react";
 import { Button } from "@material-ui/core";
 
-interface IProps {
+interface ICustomButtonProps {
   loadComponent: () => void;
   title: string;
 }
 
-const CustomButton = (props: IProps): JSX.Element => {
+const CustomButton = (props: ICustomButtonProps): JSX.Element => {
   return (
     <Button
       variant="contained"

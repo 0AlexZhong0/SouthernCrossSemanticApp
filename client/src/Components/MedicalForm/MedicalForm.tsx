@@ -1,5 +1,6 @@
 import * as React from "react";
 import { Card, CardContent, Grid } from "@material-ui/core";
+import { v4 as uuidv4 } from "uuid";
 
 // Personal Info Form
 import PersonalInfoForm from "../PersonalInfoForm/PersonalInfoForm";
@@ -123,8 +124,8 @@ const MedicalForm = (): JSX.Element => {
                           const { conditionName, symptoms } = data;
 
                           return (
-                            <div>
-                              <strong>{`Related conditions below, based on your symptoms of ${conditionName}`}</strong>
+                            <div key={uuidv4()}>
+                              <strong>{`Symptoms of ${conditionName}`}</strong>
                               <br />
                               {symptoms.map(symptom => (
                                 <CustomCheckBox
@@ -132,6 +133,7 @@ const MedicalForm = (): JSX.Element => {
                                   isCondition={false}
                                   handleOnCheck={handleOnCheck}
                                   conditionName={conditionName}
+                                  key={uuidv4()}
                                 />
                               ))}
                             </div>
@@ -149,7 +151,7 @@ const MedicalForm = (): JSX.Element => {
                           const { conditionNames, selectedCondition } = data;
 
                           return conditionNames.length > 0 ? (
-                            <div>
+                            <div key={uuidv4()}>
                               <strong>{`Related conditions below, based on your symptoms of ${selectedCondition}`}</strong>
                               <br />
                               {conditionNames.map(condition => (
@@ -158,11 +160,14 @@ const MedicalForm = (): JSX.Element => {
                                   isCondition={true}
                                   handleOnCheck={handleOnCheck}
                                   conditionName={condition}
+                                  key={uuidv4()}
                                 />
                               ))}
                             </div>
                           ) : (
-                            <strong>{`No related conditions of ${selectedCondition} found`}</strong>
+                            <strong
+                              key={uuidv4()}
+                            >{`No related conditions of ${selectedCondition} found`}</strong>
                           );
                         })}
                       </div>
@@ -170,13 +175,9 @@ const MedicalForm = (): JSX.Element => {
 
                     <div className="button">
                       <CustomButton
-                        loadComponent={() =>
-                          populateSymptoms(
-                            conditionsArray,
-                            handleOnGetSymptomsOfCondition,
-                            handleOnCheck
-                          )
-                        }
+                        loadComponent={() => {
+                          populateSymptoms(conditionsArray, handleOnGetSymptomsOfCondition);
+                        }}
                         title="Get Symptoms"
                       />
                       <br />
@@ -186,8 +187,7 @@ const MedicalForm = (): JSX.Element => {
                           populateConditions(
                             symsCondsMap,
                             conditionsArray,
-                            handleOnGetRelatedConditions,
-                            handleOnCheck
+                            handleOnGetRelatedConditions
                           )
                         }
                         title="Get Related Conditions"

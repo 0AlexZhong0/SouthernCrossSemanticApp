@@ -18,10 +18,10 @@ const CustomCheckBox = (props: ICustomCheckBoxProps): JSX.Element => {
   const handleOnCheckBoxChange = (): void => {
     if (isChecked) {
       setIsChecked(false);
-      handleOnCheck(displayText, isCondition, conditionName, "push");
+      handleOnCheck(displayText, isCondition, conditionName, "remove");
     } else {
       setIsChecked(true);
-      handleOnCheck(displayText, isCondition, conditionName, "remove");
+      handleOnCheck(displayText, isCondition, conditionName, "push");
     }
   };
 
