@@ -7,12 +7,9 @@ import {
   InvalidFlaskResponseError
 } from "SymptomCheckerApi/mainApi";
 import CustomCheckBox from "Components/MedicalForm/Helpers/CustomCheckBox";
-import {
-  ConditionNameAndRelatedSymptoms,
-  ConditionNameWithNoRelatedConditions,
-  ConditionNameAndRelatedConditions
-} from "Components/MedicalForm/actionInfoDisplay/actionInfoDisplay";
-import { IResult, IIssue, symsCondMapType, handleCheckAction } from "types/medForm";
+
+// types
+import { IResult, symsCondMapType, handleCheckAction } from "types/medForm";
 import { InvalidCredentialError } from "auth/getAccessToken";
 import {
   ISymptomsOfCondition,
@@ -96,14 +93,16 @@ export const populateSymptoms = async (
 export const populateConditions = (
   symptomsWithConditionAsKey: symsCondMapType,
   conditionsArray: string[],
-  onGetRelatedConditions: (relatedConds: IRelatedConditionsOfSymptoms[]) => void
+  onGetRelatedConditions: (relatedConds: IRelatedConditionsOfSymptoms[]) => void,
+  sex: string,
+  yearOfBirth: string | number
 ): void => {
-  // FIXME: have not yet figured out how to handle the error in my existing promise
-  // if (sex === "" || year === "") {
-  //   alert("Make sure the form is filled out properly")
-  //   return
-  // }
+  if (sex === "" || yearOfBirth === "" || yearOfBirth < 0) {
+    alert("Make sure the form is filled out properly");
+    return;
+  }
 
+  console.log(yearOfBirth);
   const noDuplicateIssueNameChecker: string[] = [];
 
   /**
@@ -113,18 +112,24 @@ export const populateConditions = (
   const relatedConditionsFromSymptoms: Promise<IRelatedConditionsOfSymptoms>[] = Object.keys(
     symptomsWithConditionAsKey
   ).map(async (selectedCondition: string) => {
-    // FIXME: hard-coded sex and birth year
     const diagnoseResult: IResult[] = await diagnoseConditionsFromSymptoms(
       symptomsWithConditionAsKey[selectedCondition],
-      "male",
-      2001
+      sex.toLowerCase(),
+      yearOfBirth
     );
 
     // select the top three issue
     const relatedConditions = diagnoseResult
       .slice(0, 3)
       .map(res => res.Issue.Name)
-      .filter(condition => condition !== selectedCondition && !conditionsArray.includes(condition));
+      .filter(
+        condition =>
+          condition !== selectedCondition &&
+          !conditionsArray.includes(condition) &&
+          !noDuplicateIssueNameChecker.includes(condition)
+      );
+
+    noDuplicateIssueNameChecker.concat(relatedConditions);
 
     return { conditionNames: relatedConditions, selectedCondition };
   });

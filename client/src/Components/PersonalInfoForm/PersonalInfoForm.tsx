@@ -1,31 +1,31 @@
-import * as React from "react"
-import { Card, CardContent, TextField, Grid } from "@material-ui/core"
+import * as React from "react";
+import { Card, CardContent, TextField, Grid } from "@material-ui/core";
 
-import SexCheckBox from "./SexCheckBox"
-import "./PersonalInfoForm.css"
+import SexCheckBox from "./SexCheckBox";
+import { PersonalInfoContext } from "contexts/PersonalInfoState";
+import "./PersonalInfoForm.css";
 
 const PersonalInfoForm = (): JSX.Element => {
-  const [date, setDate] = React.useState("")
-  const [month, setMonth] = React.useState("")
-  const [year, setYear] = React.useState("")
-  const [sex, setSex] = React.useState("")
+  const { dob, setSex, setDob } = React.useContext(PersonalInfoContext);
 
-  const handleOnDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setDate(event.target.value)
-  }
+  const handleOnDayChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setDob({ ...dob, day: event.target.value });
+  };
 
   const handleOnMonthChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setMonth(event.target.value)
-  }
+    setDob({ ...dob, month: event.target.value });
+  };
 
   // need sex and year for diagnoseConditionsFromSymptoms function
   const handleOnYearChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setYear(event.target.value)
-  }
+    setDob({ ...dob, year: event.target.value });
+  };
 
   const handleOnSexChecked = (gender: string): void => {
-    setSex(gender)
-  }
+    setSex(gender);
+  };
+
+  const { day, month, year } = dob;
 
   return (
     <div className="cardMargin">
@@ -44,8 +44,8 @@ const PersonalInfoForm = (): JSX.Element => {
                 id="date-outlined-basic"
                 label="day"
                 variant="outlined"
-                onChange={handleOnDateChange}
-                value={date}
+                onChange={handleOnDayChange}
+                value={day}
               />{" "}
               <TextField
                 id="month-outlined-basic"
@@ -70,7 +70,7 @@ const PersonalInfoForm = (): JSX.Element => {
         </Grid>
       </Grid>
     </div>
-  )
-}
+  );
+};
 
-export default PersonalInfoForm
+export default PersonalInfoForm;

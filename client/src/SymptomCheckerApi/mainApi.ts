@@ -39,26 +39,37 @@ export const getIssueInfo = async (issuedId: number): Promise<any> => {
   }
 };
 
-export const diagnoseConditionsFromSymptoms = (
+export const diagnoseConditionsFromSymptoms = async (
   symptoms: string[],
   sex: string,
-  year_of_birth: number | string
-): Promise<any> => {
+  yearOfBirth: number | string
+) => {
   const isIssue: boolean = false;
-  const flaskResponse: Promise<any> = getIds(symptoms, isIssue);
+  const flaskResponse = await getIds(symptoms, isIssue);
 
-  const diagnosisRes: Promise<any> = flaskResponse.then((res: IIdFromFlask) => {
-    const symptomIds: number[] = res.symptom_ids!; // non-null assertion
-    const diagnosis: Promise<any> = getAccessToken().then((token: { Token: string }) => {
-      const diagnoseUri: string =
-        HEALTH_BASE_URL +
-        `/diagnosis?symptoms=[${symptomIds}]&gender=${sex}&year_of_birth=${year_of_birth}&token=${token.Token}&format=json&language=en-gb`;
-      const relatedConditions: Promise<any> = requests(diagnoseUri);
-      return relatedConditions;
-    });
+  const symptomIds = flaskResponse.symptom_ids;
+  const accessToken = (await getAccessToken()).Token;
+  const diagnoseUri: string =
+    HEALTH_BASE_URL +
+    `/diagnosis?symptoms=[${symptomIds}]&gender=${sex}&year_of_birth=${yearOfBirth}&token=${accessToken}&format=json&language=en-gb`;
+  const relatedConditions = requests(diagnoseUri);
 
-    return diagnosis;
-  });
+  return relatedConditions;
 
-  return diagnosisRes;
+  //  const diagnosisRes: Promise<any> = getIds(symptoms, isIssue).then((res: IIdFromFlask) => {
+  //    const symptomIds: number[] = res.symptom_ids!; // non-null assertion
+  //    const diagnosis: Promise<any> = getAccessToken().then((token: { Token: string }) => {
+  //      const diagnoseUri: string =
+  //        HEALTH_BASE_URL +
+  //        `/diagnosis?symptoms=[${symptomIds}]&gender=${sex}&year_of_birth=${yearOfBirth}&token=${token.Token}&format=json&language=en-gb`;
+  //      console.log(diagnoseUri);
+  //      const relatedConditions: Promise<any> = requests(diagnoseUri);
+
+  //      return relatedConditions;
+  //    });
+
+  //    return diagnosis;
+  //  });
+
+  //  return diagnosisRes;
 };

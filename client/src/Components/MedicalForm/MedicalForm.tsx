@@ -6,16 +6,17 @@ import PersonalInfoForm from "../PersonalInfoForm/PersonalInfoForm";
 
 // Custom components
 import CustomButton from "Components/MedicalForm/Helpers/CustomButton";
+import CustomCheckBox from "./Helpers/CustomCheckBox";
+import FormHeaderLogo from "./Headers/FormHeaderLogo";
+import Header from "./Headers/Header";
 
+// Headers
 import {
   initialConfirmConditionDescription,
   symptomsConfirmDescription,
   relatedConditionsConfirmDescription
-} from "./actionInfoDisplay/descriptions";
-
-// Headers
-import FormHeaderLogo from "./Headers/FormHeaderLogo";
-import Header from "./Headers/Header";
+} from "./descriptions";
+import { handleCheckAction } from "types/medForm";
 
 // core helper function
 import {
@@ -29,8 +30,8 @@ import { symsCondsMapReducer, conditionsArrayReducer } from "stores/medFormReduc
 
 // frontend styling
 import "./MedicalForm.css";
-import { handleCheckAction } from "types/medForm";
-import CustomCheckBox from "./Helpers/CustomCheckBox";
+
+import { PersonalInfoContext } from "contexts/PersonalInfoState";
 
 export type ISymptomsOfCondition = {
   symptoms: string[];
@@ -55,6 +56,8 @@ const MedicalForm = (): JSX.Element => {
   const [relatedConditions, setRelatedConditions] = React.useState<
     IRelatedConditionsOfSymptoms[]
   >();
+
+  const { sex, dob } = React.useContext(PersonalInfoContext);
 
   const handleOnCheck: handleCheckAction = (symptom, isCondition, conditionName, type) => {
     if (type === "push") {
@@ -144,7 +147,12 @@ const MedicalForm = (): JSX.Element => {
                     <br />
 
                     {relatedConditions && relatedConditions.length > 0 ? (
-                      <div>
+                      <div
+                        style={{
+                          flex: "1",
+                          flexDirection: "column"
+                        }}
+                      >
                         <h2 className="description">{relatedConditionsConfirmDescription}</h2>
                         {relatedConditions.map((data, i) => {
                           const { conditionNames, selectedCondition } = data;
@@ -164,9 +172,7 @@ const MedicalForm = (): JSX.Element => {
                               ))}
                             </div>
                           ) : (
-                            <strong
-                              key={i}
-                            >{`No related conditions of ${selectedCondition} found`}</strong>
+                            <p key={i}>{`No related conditions of ${selectedCondition} found`}</p>
                           );
                         })}
                       </div>
@@ -186,7 +192,9 @@ const MedicalForm = (): JSX.Element => {
                           populateConditions(
                             symsCondsMap,
                             conditionsArray,
-                            handleOnGetRelatedConditions
+                            handleOnGetRelatedConditions,
+                            sex,
+                            dob.year
                           )
                         }
                         title="Get Related Conditions"
