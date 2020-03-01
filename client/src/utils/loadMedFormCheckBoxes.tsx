@@ -5,8 +5,8 @@ import {
   getIds,
   diagnoseConditionsFromSymptoms,
   InvalidFlaskResponseError
-} from "SymptomCheckerApi/mainApi";
-import CustomCheckBox from "Components/MedicalForm/Helpers/CustomCheckBox";
+} from "symptomCheckerApi/mainApi";
+import CustomCheckBox from "components/medicalForm/helpers/CustomCheckBox";
 
 // types
 import { IResult, symsCondMapType, handleCheckAction } from "types/medForm";
@@ -14,7 +14,7 @@ import { InvalidCredentialError } from "auth/getAccessToken";
 import {
   ISymptomsOfCondition,
   IRelatedConditionsOfSymptoms
-} from "Components/MedicalForm/MedicalForm";
+} from "components/medicalForm/MedicalForm";
 
 // think about the possible ways of converting the code below using a reducer
 const formatSymptomsAndGetArray = (possibleSymptoms: string): string[] => {
@@ -102,7 +102,6 @@ export const populateConditions = (
     return;
   }
 
-  console.log(yearOfBirth);
   const noDuplicateIssueNameChecker: string[] = [];
 
   /**

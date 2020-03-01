@@ -1,7 +1,7 @@
-import { HEALTH_BASE_URL } from "SymptomCheckerApi/ApiUtilities/requests";
+import { HEALTH_BASE_URL } from "symptomCheckerApi/utils/requests";
 import { getAccessToken, InvalidCredentialError } from "auth/getAccessToken";
-import requests from "SymptomCheckerApi/ApiUtilities/requests";
-import postResGetId from "SymptomCheckerApi/ApiUtilities/postResGetId";
+import requests from "symptomCheckerApi/utils/requests";
+import postResGetId from "symptomCheckerApi/utils/postResGetId";
 import { MyError } from "utils/MyError";
 
 export interface IIdFromFlask {
@@ -55,21 +55,4 @@ export const diagnoseConditionsFromSymptoms = async (
   const relatedConditions = requests(diagnoseUri);
 
   return relatedConditions;
-
-  //  const diagnosisRes: Promise<any> = getIds(symptoms, isIssue).then((res: IIdFromFlask) => {
-  //    const symptomIds: number[] = res.symptom_ids!; // non-null assertion
-  //    const diagnosis: Promise<any> = getAccessToken().then((token: { Token: string }) => {
-  //      const diagnoseUri: string =
-  //        HEALTH_BASE_URL +
-  //        `/diagnosis?symptoms=[${symptomIds}]&gender=${sex}&year_of_birth=${yearOfBirth}&token=${token.Token}&format=json&language=en-gb`;
-  //      console.log(diagnoseUri);
-  //      const relatedConditions: Promise<any> = requests(diagnoseUri);
-
-  //      return relatedConditions;
-  //    });
-
-  //    return diagnosis;
-  //  });
-
-  //  return diagnosisRes;
 };

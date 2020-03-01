@@ -1,7 +1,7 @@
-import { AUTH_BASE_URL } from "SymptomCheckerApi/ApiUtilities/requests";
+import { AUTH_BASE_URL } from "symptomCheckerApi/utils/requests";
 import { MyError } from "utils/MyError";
 import getHashedCredString from "./getHashedCredString";
-import requests from "SymptomCheckerApi/ApiUtilities/requests";
+import requests from "symptomCheckerApi/utils/requests";
 
 export class InvalidCredentialError extends MyError {}
 

@@ -2,13 +2,13 @@ import * as React from "react";
 import { Card, CardContent, Grid } from "@material-ui/core";
 
 // Personal Info Form
-import PersonalInfoForm from "../PersonalInfoForm/PersonalInfoForm";
+import PersonalInfoForm from "../personalInfoForm/PersonalInfoForm";
 
 // Custom components
-import CustomButton from "Components/MedicalForm/Helpers/CustomButton";
-import CustomCheckBox from "./Helpers/CustomCheckBox";
-import FormHeaderLogo from "./Headers/FormHeaderLogo";
-import Header from "./Headers/Header";
+import CustomButton from "components/medicalForm/helpers/CustomButton";
+import CustomCheckBox from "./helpers/CustomCheckBox";
+import FormHeaderLogo from "./headers/FormHeaderLogo";
+import Header from "./headers/Header";
 
 // Headers
 import {
