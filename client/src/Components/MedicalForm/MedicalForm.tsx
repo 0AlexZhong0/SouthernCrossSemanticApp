@@ -1,6 +1,5 @@
 import * as React from "react";
 import { Card, CardContent, Grid } from "@material-ui/core";
-import { v4 as uuidv4 } from "uuid";
 
 // Personal Info Form
 import PersonalInfoForm from "../PersonalInfoForm/PersonalInfoForm";
@@ -120,20 +119,20 @@ const MedicalForm = (): JSX.Element => {
                     {symptomsOfCondition && symptomsOfCondition.length > 0 ? (
                       <div>
                         <h2 className="description">{symptomsConfirmDescription}</h2>
-                        {symptomsOfCondition.map(data => {
+                        {symptomsOfCondition.map((data, i) => {
                           const { conditionName, symptoms } = data;
 
                           return (
-                            <div key={uuidv4()}>
+                            <div key={i}>
                               <strong>{`Symptoms of ${conditionName}`}</strong>
                               <br />
-                              {symptoms.map(symptom => (
+                              {symptoms.map((symptom, ind) => (
                                 <CustomCheckBox
                                   displayText={symptom}
                                   isCondition={false}
                                   handleOnCheck={handleOnCheck}
                                   conditionName={conditionName}
-                                  key={uuidv4()}
+                                  key={ind}
                                 />
                               ))}
                             </div>
@@ -147,26 +146,26 @@ const MedicalForm = (): JSX.Element => {
                     {relatedConditions && relatedConditions.length > 0 ? (
                       <div>
                         <h2 className="description">{relatedConditionsConfirmDescription}</h2>
-                        {relatedConditions.map(data => {
+                        {relatedConditions.map((data, i) => {
                           const { conditionNames, selectedCondition } = data;
 
                           return conditionNames.length > 0 ? (
-                            <div key={uuidv4()}>
+                            <div key={i}>
                               <strong>{`Related conditions below, based on your symptoms of ${selectedCondition}`}</strong>
                               <br />
-                              {conditionNames.map(condition => (
+                              {conditionNames.map((condition, ind) => (
                                 <CustomCheckBox
                                   displayText={condition}
                                   isCondition={true}
                                   handleOnCheck={handleOnCheck}
                                   conditionName={condition}
-                                  key={uuidv4()}
+                                  key={ind}
                                 />
                               ))}
                             </div>
                           ) : (
                             <strong
-                              key={uuidv4()}
+                              key={i}
                             >{`No related conditions of ${selectedCondition} found`}</strong>
                           );
                         })}
