@@ -31,7 +31,14 @@ const PersonalInfoForm = (): JSX.Element => {
   const useStyles = makeStyles(theme => ({
     root: {
       "& .MuiTextField-root": {
-        marginRight: theme.spacing(2)
+        marginRight: theme.spacing(2),
+        marginBottom: theme.spacing(1),
+        [theme.breakpoints.between("sm", "xl")]: {
+          width: "30%"
+        },
+        [theme.breakpoints.down("sm")]: {
+          width: "100%"
+        }
       }
     }
   }));
@@ -44,10 +51,10 @@ const PersonalInfoForm = (): JSX.Element => {
         <Card>
           <CardContent>
             <form className={classes.root}>
-              <h2 className="arialFont">Personal Information</h2>
+              <p className="header">Personal Information</p>
               <TextField label="First name" />
               <TextField label="Surname" />
-              <h3 className="arialFont">Date of Birth</h3>
+              <p className="header">Date of Birth</p>
               <TextField
                 id="day-outlined-basic"
                 label="day"
@@ -70,7 +77,7 @@ const PersonalInfoForm = (): JSX.Element => {
                 value={year}
               />
             </form>
-            <h3 className="arialFont">Biological sex</h3>
+            <p className="header">Biological sex</p>
             <SexCheckBox gender="Male" onCheck={handleOnSexChecked} />
             <SexCheckBox gender="Female" onCheck={handleOnSexChecked} />
           </CardContent>

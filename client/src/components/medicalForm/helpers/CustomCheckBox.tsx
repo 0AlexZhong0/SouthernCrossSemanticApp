@@ -3,6 +3,8 @@ import { Checkbox, FormControlLabel } from "@material-ui/core";
 
 import { handleCheckAction } from "types/medForm";
 
+import "css/helperText.css";
+
 interface ICustomCheckBoxProps {
   displayText: string;
   isCondition: boolean;
@@ -34,7 +36,7 @@ const CustomCheckBox = (props: ICustomCheckBoxProps): JSX.Element => {
           style={{ color: "#008bce" }}
         />
       }
-      label={displayText}
+      label={<p className="checkbox-text">{displayText}</p>}
     />
   );
 };

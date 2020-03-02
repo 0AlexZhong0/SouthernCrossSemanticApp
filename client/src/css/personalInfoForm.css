@@ -1,8 +1,10 @@
-.arialFont {
-  font-family: Arial, Helvetica, sans-serif;
-}
-
 .info-form-container {
   padding-left: 1rem;
   padding-right: 1rem;
+}
+
+.header {
+  font-size: calc(0.65rem + 0.85vw);
+  font-weight: bold;
+  font-family: Arial, Helvetica, sans-serif;
 }
