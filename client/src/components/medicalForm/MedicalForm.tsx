@@ -26,7 +26,7 @@ import CTAButtonsGroup from "./CTAButtonsGroup";
 import "css/medicalForm.css";
 import "css/helperText.css";
 
-import bgImg from "css/sunlight.jpeg";
+import sunglightBgImg from "css/form-sunlight-bg.jpeg";
 
 export type ISymptomsOfCondition = {
   symptoms: string[];
@@ -78,7 +78,7 @@ const MedicalForm = (): JSX.Element => {
 
   return (
     <div>
-      <img src={bgImg} className="img" alt="bgIMg" />
+      <img src={sunglightBgImg} className="sunglightBgImg" alt="sunglightBgImg" />
       {/* FIXME: The logo is too big and odd when embedded in the chatbot interface  */}
       <FormHeaderLogo />
 
