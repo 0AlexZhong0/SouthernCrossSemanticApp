@@ -4,6 +4,8 @@ import { IRelatedConditionsOfSymptoms } from "./MedicalForm";
 import { relatedConditionsConfirmDescription } from "./descriptions";
 import CustomCheckBox from "./helpers/CustomCheckBox";
 
+import "css/helperText.css";
+
 type IRelatedConditionsProps = {
   relatedConditions: IRelatedConditionsOfSymptoms[] | undefined;
   handleOnCheck: handleCheckAction;
@@ -14,14 +16,13 @@ const RelatedConditions = (props: IRelatedConditionsProps) => {
 
   return relatedConditions && relatedConditions.length > 0 ? (
     <div>
-      <h2 className="description">{relatedConditionsConfirmDescription}</h2>
+      <p className="description">{relatedConditionsConfirmDescription}</p>
       {relatedConditions.map((data, i) => {
         const { conditionNames, selectedCondition } = data;
 
         return conditionNames.length > 0 ? (
           <div key={i}>
-            <strong>{`Related conditions below, based on your symptoms of ${selectedCondition}`}</strong>
-            <br />
+            <p className="sub-header">{`Related conditions below, based on your symptoms of ${selectedCondition}`}</p>
             {conditionNames.map((condition, ind) => (
               <CustomCheckBox
                 displayText={condition}

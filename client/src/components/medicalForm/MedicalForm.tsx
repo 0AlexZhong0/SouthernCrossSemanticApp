@@ -5,15 +5,11 @@ import { Card, CardContent, Grid } from "@material-ui/core";
 import PersonalInfoForm from "../personalInfoForm/PersonalInfoForm";
 
 // Custom components
-import FormHeaderLogo from "./headers/FormHeaderLogo";
-import Header from "./headers/Header";
+import FormHeaderLogo from "./header/FormHeaderLogo";
+import Header from "./header/Header";
 
 // core helper function
-import {
-  populateSymptoms,
-  getInitialIssues,
-  populateConditions
-} from "utils/loadMedFormCheckBoxes";
+import { populateSymptoms, InitialIssues, populateConditions } from "utils/loadMedFormCheckBoxes";
 
 import { initialConfirmConditionDescription } from "./descriptions";
 import { handleCheckAction } from "types/medForm";
@@ -22,7 +18,8 @@ import { handleCheckAction } from "types/medForm";
 import { symsCondsMapReducer, conditionsArrayReducer } from "stores/medFormReducers";
 
 // frontend styling
-import "./medicalForm.css";
+import "css/medicalForm.css";
+import "css/helperText.css";
 
 import { PersonalInfoContext } from "contexts/PersonalInfoState";
 import SymptomsOfConditions from "./SymptomsOfConditions";
@@ -43,8 +40,6 @@ export type IRelatedConditionsOfSymptoms = {
 const initIssues: string[] = ["Heart attack", "Hernia", "Kidney stones", "Urinary tract infection"];
 
 const MedicalForm = (): JSX.Element => {
-  // FIXME: the symsCondsMap object indefinitely gets updated, figure out why
-  // same with the conditionsArry object, it only works for the initial issues checkbox
   const [symsCondsMap, symsCondsMapDispatch] = React.useReducer(symsCondsMapReducer, {});
   const [conditionsArray, condsArrDispatch] = React.useReducer(conditionsArrayReducer, []);
 
@@ -80,9 +75,9 @@ const MedicalForm = (): JSX.Element => {
     setRelatedConditions(relatedConds);
 
   return (
-    <div className="backgroundImg">
+    <div className="form-wrapper">
       {/* The logo is too big and odd when embedded in the chatbot interface  */}
-      {/* <FormHeaderLogo /> */}
+      <FormHeaderLogo />
 
       <Header text="Your Details" />
       <PersonalInfoForm />
@@ -99,8 +94,8 @@ const MedicalForm = (): JSX.Element => {
           <Card>
             <CardContent>
               <div>
-                <h2 className="description">{initialConfirmConditionDescription}</h2>
-                <div className="centerInitIssue">{getInitialIssues(initIssues, handleOnCheck)}</div>
+                <p className="description">{initialConfirmConditionDescription}</p>
+                <InitialIssues issues={initIssues} handleOnCheck={handleOnCheck} />
 
                 <SymptomsOfConditions
                   symptomsOfCondition={symptomsOfCondition}

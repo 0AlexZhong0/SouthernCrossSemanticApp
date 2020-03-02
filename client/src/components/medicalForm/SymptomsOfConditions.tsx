@@ -4,6 +4,8 @@ import { symptomsConfirmDescription } from "./descriptions";
 import CustomCheckBox from "./helpers/CustomCheckBox";
 import { handleCheckAction } from "types/medForm";
 
+import "css/helperText.css";
+
 type SymptomsOfConditionsProps = {
   symptomsOfCondition: ISymptomsOfCondition[] | undefined;
   handleOnCheck: handleCheckAction;
@@ -14,14 +16,13 @@ const SymptomsOfConditions = (props: SymptomsOfConditionsProps) => {
 
   return symptomsOfCondition && symptomsOfCondition.length > 0 ? (
     <div>
-      <h2 className="description">{symptomsConfirmDescription}</h2>
+      <p className="description">{symptomsConfirmDescription}</p>
       {symptomsOfCondition.map((data, i) => {
         const { conditionName, symptoms } = data;
 
         return (
           <div key={i}>
-            <strong>{`Symptoms of ${conditionName}`}</strong>
-            <br />
+            <p className="sub-header">{`Symptoms of ${conditionName}`}</p>
             {symptoms.map((symptom, ind) => (
               <CustomCheckBox
                 displayText={symptom}

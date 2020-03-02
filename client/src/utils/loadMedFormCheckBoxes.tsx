@@ -16,6 +16,8 @@ import {
   IRelatedConditionsOfSymptoms
 } from "components/medicalForm/MedicalForm";
 
+import "css/initIssues.css";
+
 // think about the possible ways of converting the code below using a reducer
 const formatSymptomsAndGetArray = (possibleSymptoms: string): string[] => {
   // very inefficent way of sorting the words
@@ -32,19 +34,22 @@ const formatSymptomsAndGetArray = (possibleSymptoms: string): string[] => {
   return possibleSyms;
 };
 
-export const getInitialIssues = (
-  issues: string[],
-  handleOnCheck: handleCheckAction
-): JSX.Element[] =>
-  issues.map((issue: string, index: number) => (
-    <CustomCheckBox
-      key={issue + `${index}`}
-      isCondition={true}
-      conditionName={issue}
-      displayText={issue}
-      handleOnCheck={handleOnCheck}
-    />
-  ));
+export const InitialIssues = (props: {
+  issues: string[];
+  handleOnCheck: handleCheckAction;
+}): JSX.Element => (
+  <div className="init-issues-container">
+    {props.issues.map((issue: string, index: number) => (
+      <CustomCheckBox
+        key={issue + `${index}`}
+        isCondition={true}
+        conditionName={issue}
+        displayText={issue}
+        handleOnCheck={props.handleOnCheck}
+      />
+    ))}
+  </div>
+);
 
 const getSymptomsOfAllConditions = (conditions: string[], issueIds: number[]) => {
   const symptoms = issueIds.map(async (issueId: number, index: number) => {

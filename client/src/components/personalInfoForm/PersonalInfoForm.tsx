@@ -4,7 +4,7 @@ import { makeStyles } from "@material-ui/core/styles";
 
 import SexCheckBox from "./SexCheckBox";
 import { PersonalInfoContext } from "contexts/PersonalInfoState";
-import "./personalInfoForm.css";
+import "css/personalInfoForm.css";
 
 const PersonalInfoForm = (): JSX.Element => {
   const { dob, setSex, setDob } = React.useContext(PersonalInfoContext);

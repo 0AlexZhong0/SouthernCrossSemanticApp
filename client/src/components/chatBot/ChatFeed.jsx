@@ -1,9 +1,9 @@
-import React from "react"
+import React from "react";
 // @ts-ignore
-import ChatBot from "react-simple-chatbot"
+import ChatBot from "react-simple-chatbot";
 
-import "./ChatFeed.css"
-import MedicalForm from "../MedicalForm/MedicalForm"
+import "./chatFeed.css";
+import MedicalForm from "../MedicalForm/MedicalForm";
 
 const ChatFeed = () => {
   const steps = [
@@ -39,7 +39,7 @@ const ChatFeed = () => {
       message: "Thank you, have a good day!",
       end: true
     }
-  ]
+  ];
   return (
     <ChatBot
       steps={steps}
@@ -48,7 +48,7 @@ const ChatFeed = () => {
       headerTitle="SouthernCross ChatBot"
       enableSmoothScroll={true}
     />
-  )
-}
+  );
+};
 
-export default ChatFeed
+export default ChatFeed;

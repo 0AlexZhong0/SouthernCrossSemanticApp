@@ -3,12 +3,13 @@ import MedicalForm from "components/medicalForm/MedicalForm";
 // import ChatFeed from "Components/ChatBot/ChatFeed"
 import PersonalInfoStateProvider from "contexts/PersonalInfoState";
 
-const App = (): JSX.Element => {
+const App: React.FC = (): JSX.Element => {
   return (
     <PersonalInfoStateProvider>
       <MedicalForm />
     </PersonalInfoStateProvider>
   );
+
   // return <ChatFeed />
 };
 

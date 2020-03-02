@@ -1,0 +1,13 @@
+.conditions-and-symptoms-container {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+.form-wrapper {
+  background-image: url(medical-form-bg.jpg);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-attachment: fixed;
+  padding: 0.5rem;
+}
