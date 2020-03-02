@@ -1,11 +1,16 @@
 import * as React from "react";
 
+// import {
+//   getIssueInfo,
+//   getIds,
+//   diagnoseConditionsFromSymptoms,
+//   InvalidFlaskResponseError
+// } from "symptomCheckerApi/mainApi";
+
 import {
-  getIssueInfo,
-  getIds,
-  diagnoseConditionsFromSymptoms,
-  InvalidFlaskResponseError
-} from "symptomCheckerApi/mainApi";
+  InvalidFlaskResponseError,
+  symptomCheckerClient
+} from "symptomCheckerApi/SymptomCheckerClient";
 import CustomCheckBox from "components/medicalForm/helpers/CustomCheckBox";
 
 // types
@@ -55,7 +60,7 @@ const getSymptomsOfAllConditions = (conditions: string[], issueIds: number[]) =>
   const symptoms = issueIds.map(async (issueId: number, index: number) => {
     try {
       const possibleSymptoms: string[] = formatSymptomsAndGetArray(
-        (await getIssueInfo(issueId)).PossibleSymptoms
+        (await symptomCheckerClient._getIssueInfo(issueId)).PossibleSymptoms
       );
       const conditionName: string = conditions[index];
 
@@ -83,7 +88,7 @@ export const populateSymptoms = async (
   const isIssue: boolean = true;
 
   try {
-    const ids = await getIds(conditions, isIssue);
+    const ids = await symptomCheckerClient._getIds(conditions, isIssue);
     const symptomsOfAllIssues = await Promise.all(
       getSymptomsOfAllConditions(conditions, ids.issue_ids!)
     );
@@ -121,7 +126,7 @@ export const populateConditions = (
   const relatedConditionsFromSymptoms: Promise<IRelatedConditionsOfSymptoms>[] = Object.keys(
     symptomsWithConditionAsKey
   ).map(async (selectedCondition: string) => {
-    const diagnoseResult: IResult[] = await diagnoseConditionsFromSymptoms(
+    const diagnoseResult: IResult[] = await symptomCheckerClient._getSymptomsRelatedConditions(
       symptomsWithConditionAsKey[selectedCondition],
       sex.toLowerCase(),
       yearOfBirth

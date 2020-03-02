@@ -17,14 +17,14 @@ import { handleCheckAction } from "types/medForm";
 // reducers
 import { symsCondsMapReducer, conditionsArrayReducer } from "stores/medFormReducers";
 
-// frontend styling
-import "css/medicalForm.css";
-import "css/helperText.css";
-
 import { PersonalInfoContext } from "contexts/PersonalInfoState";
 import SymptomsOfConditions from "./SymptomsOfConditions";
 import RelatedConditions from "./RelatedConditions";
 import CTAButtonsGroup from "./CTAButtonsGroup";
+
+// frontend styling
+import "css/medicalForm.css";
+import "css/helperText.css";
 
 import bgImg from "css/sunlight.jpeg";
 
