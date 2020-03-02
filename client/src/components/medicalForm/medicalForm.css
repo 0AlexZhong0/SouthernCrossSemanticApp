@@ -2,18 +2,9 @@
   font-family: Arial, Helvetica, sans-serif;
 }
 
-body{
-  margin: 0;
-}
-
-.button {
-  text-align: center;
-}
-
-
-.cardMargin{
-  padding-left: 15px;
-  padding-right: 15px;
+.conditions-and-symptoms-container {
+  padding-left: 1rem;
+  padding-right: 1rem;
 }
 
 .description {
@@ -21,13 +12,7 @@ body{
   text-align: center;
 }
 
-.fill {
-  display: inline-block;
-  columns: 40px 1;
-}
-
-.formBody{
-  margin: 0;
+.backgroundImg {
   background-image: url(background.jpg);
   background-size: cover;
   background-repeat: no-repeat;
@@ -35,15 +20,6 @@ body{
   background-attachment: fixed;
 }
 
-.formFont{
-  font-family: Arial, Helvetica, sans-serif;
-}
-
-
-.horizontallyInitIssue {
-  display: inline-block;
-}
-
-.centerInitIssue{
+.centerInitIssue {
   text-align: center;
 }

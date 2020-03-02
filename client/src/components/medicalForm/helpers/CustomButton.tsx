@@ -10,7 +10,7 @@ const CustomButton = (props: ICustomButtonProps): JSX.Element => {
   return (
     <Button
       variant="contained"
-      style={{ backgroundColor: "#008bce", color: "white" }}
+      style={{ backgroundColor: "#008bce", color: "white", marginBottom: "0.4rem" }}
       onClick={props.loadComponent}
     >
       {props.title}

@@ -1,8 +1,12 @@
-import * as React from "react"
+import * as React from "react";
 
-import "./Header.css"
-import logo from "./logo.jpg"
+import "./header.css";
+import logo from "./logo.jpg";
 
-const FormHeaderLogo = () => <img className="headerLogo" src={logo} alt="SouthernCross Logo" />
+const FormHeaderLogo = () => (
+  <div className="logo">
+    <img src={logo} alt="SouthernCross Logo" />
+  </div>
+);
 
-export default FormHeaderLogo
+export default FormHeaderLogo;

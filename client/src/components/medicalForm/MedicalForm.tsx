@@ -5,18 +5,8 @@ import { Card, CardContent, Grid } from "@material-ui/core";
 import PersonalInfoForm from "../personalInfoForm/PersonalInfoForm";
 
 // Custom components
-import CustomButton from "components/medicalForm/helpers/CustomButton";
-import CustomCheckBox from "./helpers/CustomCheckBox";
 import FormHeaderLogo from "./headers/FormHeaderLogo";
 import Header from "./headers/Header";
-
-// Headers
-import {
-  initialConfirmConditionDescription,
-  symptomsConfirmDescription,
-  relatedConditionsConfirmDescription
-} from "./descriptions";
-import { handleCheckAction } from "types/medForm";
 
 // core helper function
 import {
@@ -25,13 +15,19 @@ import {
   populateConditions
 } from "utils/loadMedFormCheckBoxes";
 
+import { initialConfirmConditionDescription } from "./descriptions";
+import { handleCheckAction } from "types/medForm";
+
 // reducers
 import { symsCondsMapReducer, conditionsArrayReducer } from "stores/medFormReducers";
 
 // frontend styling
-import "./MedicalForm.css";
+import "./medicalForm.css";
 
 import { PersonalInfoContext } from "contexts/PersonalInfoState";
+import SymptomsOfConditions from "./SymptomsOfConditions";
+import RelatedConditions from "./RelatedConditions";
+import CTAButtonsGroup from "./CTAButtonsGroup";
 
 export type ISymptomsOfCondition = {
   symptoms: string[];
@@ -84,132 +80,58 @@ const MedicalForm = (): JSX.Element => {
     setRelatedConditions(relatedConds);
 
   return (
-    <React.Fragment>
-      <div className="formBody">
-        {/* The logo is too big and odd when embedded in the chatbot interface  */}
-        <FormHeaderLogo />
-        <br />
-        <br />
-        <br />
+    <div className="backgroundImg">
+      {/* The logo is too big and odd when embedded in the chatbot interface  */}
+      {/* <FormHeaderLogo /> */}
 
-        <div className="cardMargin">
-          <Header text="Your Details" />
-        </div>
+      <Header text="Your Details" />
+      <PersonalInfoForm />
+      <Header text="Your Health Condition(s)" />
 
-        <PersonalInfoForm />
+      {/* Conditions and Symptoms card below */}
+      <Grid
+        className="conditions-and-symptoms-container"
+        container={true}
+        alignItems="center"
+        justify="center"
+      >
+        <Grid item={true} xs={12} sm={12} md={12}>
+          <Card>
+            <CardContent>
+              <div>
+                <h2 className="description">{initialConfirmConditionDescription}</h2>
+                <div className="centerInitIssue">{getInitialIssues(initIssues, handleOnCheck)}</div>
 
-        <br />
-        <br />
+                <SymptomsOfConditions
+                  symptomsOfCondition={symptomsOfCondition}
+                  handleOnCheck={handleOnCheck}
+                />
 
-        <div className="cardMargin">
-          <Header text="Your Health Condition(s)" />
-        </div>
+                <RelatedConditions
+                  relatedConditions={relatedConditions}
+                  handleOnCheck={handleOnCheck}
+                />
 
-        {/* Conditions and Symptoms card below */}
-        <div className="cardMargin">
-          <Grid container={true} alignItems="center" justify="center">
-            <Grid item={true} xs={12} sm={12} md={12}>
-              <Card>
-                <CardContent>
-                  <div className="formFont">
-                    <h2 className="description">{initialConfirmConditionDescription}</h2>
-                    <div className="centerInitIssue">
-                      <div className="horizontallyCenterInitIssue">
-                        {getInitialIssues(initIssues, handleOnCheck)}
-                      </div>
-                    </div>
-
-                    {symptomsOfCondition && symptomsOfCondition.length > 0 ? (
-                      <div>
-                        <h2 className="description">{symptomsConfirmDescription}</h2>
-                        {symptomsOfCondition.map((data, i) => {
-                          const { conditionName, symptoms } = data;
-
-                          return (
-                            <div key={i}>
-                              <strong>{`Symptoms of ${conditionName}`}</strong>
-                              <br />
-                              {symptoms.map((symptom, ind) => (
-                                <CustomCheckBox
-                                  displayText={symptom}
-                                  isCondition={false}
-                                  handleOnCheck={handleOnCheck}
-                                  conditionName={conditionName}
-                                  key={ind}
-                                />
-                              ))}
-                            </div>
-                          );
-                        })}
-                      </div>
-                    ) : null}
-
-                    <br />
-
-                    {relatedConditions && relatedConditions.length > 0 ? (
-                      <div
-                        style={{
-                          flex: "1",
-                          flexDirection: "column"
-                        }}
-                      >
-                        <h2 className="description">{relatedConditionsConfirmDescription}</h2>
-                        {relatedConditions.map((data, i) => {
-                          const { conditionNames, selectedCondition } = data;
-
-                          return conditionNames.length > 0 ? (
-                            <div key={i}>
-                              <strong>{`Related conditions below, based on your symptoms of ${selectedCondition}`}</strong>
-                              <br />
-                              {conditionNames.map((condition, ind) => (
-                                <CustomCheckBox
-                                  displayText={condition}
-                                  isCondition={true}
-                                  handleOnCheck={handleOnCheck}
-                                  conditionName={condition}
-                                  key={ind}
-                                />
-                              ))}
-                            </div>
-                          ) : (
-                            <p key={i}>{`No related conditions of ${selectedCondition} found`}</p>
-                          );
-                        })}
-                      </div>
-                    ) : null}
-
-                    <div className="button">
-                      <CustomButton
-                        loadComponent={() => {
-                          populateSymptoms(conditionsArray, handleOnGetSymptomsOfCondition);
-                        }}
-                        title="Get Symptoms"
-                      />
-                      <br />
-                      <br />
-                      <CustomButton
-                        loadComponent={() =>
-                          populateConditions(
-                            symsCondsMap,
-                            conditionsArray,
-                            handleOnGetRelatedConditions,
-                            sex,
-                            dob.year
-                          )
-                        }
-                        title="Get Related Conditions"
-                      />
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </Grid>
-          </Grid>
-        </div>
-        <br />
-        <br />
-      </div>
-    </React.Fragment>
+                <CTAButtonsGroup
+                  populateSymptoms={() => {
+                    populateSymptoms(conditionsArray, handleOnGetSymptomsOfCondition);
+                  }}
+                  populateRelatedConditions={() =>
+                    populateConditions(
+                      symsCondsMap,
+                      conditionsArray,
+                      handleOnGetRelatedConditions,
+                      sex,
+                      dob.year
+                    )
+                  }
+                />
+              </div>
+            </CardContent>
+          </Card>
+        </Grid>
+      </Grid>
+    </div>
   );
 };
 

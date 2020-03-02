@@ -1,9 +1,10 @@
 import * as React from "react";
 import { Card, CardContent, TextField, Grid } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 
 import SexCheckBox from "./SexCheckBox";
 import { PersonalInfoContext } from "contexts/PersonalInfoState";
-import "./PersonalInfoForm.css";
+import "./personalInfoForm.css";
 
 const PersonalInfoForm = (): JSX.Element => {
   const { dob, setSex, setDob } = React.useContext(PersonalInfoContext);
@@ -27,33 +28,40 @@ const PersonalInfoForm = (): JSX.Element => {
 
   const { day, month, year } = dob;
 
+  const useStyles = makeStyles(theme => ({
+    root: {
+      "& .MuiTextField-root": {
+        marginRight: theme.spacing(2)
+      }
+    }
+  }));
+
+  const classes = useStyles();
+
   return (
-    <div className="cardMargin">
-      <Grid container={true} alignItems="center" justify="center">
-        <Grid item={true} xs={12} sm={12} md={12}>
-          <Card>
-            <CardContent>
+    <Grid className="info-form-container" container={true} alignItems="center" justify="center">
+      <Grid item={true} xs={12} sm={12} md={12}>
+        <Card>
+          <CardContent>
+            <form className={classes.root}>
               <h2 className="arialFont">Personal Information</h2>
               <TextField label="First name" />
-              <div className="fill" />
               <TextField label="Surname" />
-              <div className="fill" />
-              <br />
               <h3 className="arialFont">Date of Birth</h3>
               <TextField
-                id="date-outlined-basic"
+                id="day-outlined-basic"
                 label="day"
                 variant="outlined"
                 onChange={handleOnDayChange}
                 value={day}
-              />{" "}
+              />
               <TextField
                 id="month-outlined-basic"
                 label="month"
                 variant="outlined"
                 onChange={handleOnMonthChange}
                 value={month}
-              />{" "}
+              />
               <TextField
                 id="year-outlined-basic"
                 label="year"
@@ -61,15 +69,14 @@ const PersonalInfoForm = (): JSX.Element => {
                 onChange={handleOnYearChange}
                 value={year}
               />
-              <br />
-              <h3 className="arialFont">Biological sex</h3>
-              <SexCheckBox gender="Male" onCheck={handleOnSexChecked} />
-              <SexCheckBox gender="Female" onCheck={handleOnSexChecked} />
-            </CardContent>
-          </Card>
-        </Grid>
+            </form>
+            <h3 className="arialFont">Biological sex</h3>
+            <SexCheckBox gender="Male" onCheck={handleOnSexChecked} />
+            <SexCheckBox gender="Female" onCheck={handleOnSexChecked} />
+          </CardContent>
+        </Card>
       </Grid>
-    </div>
+    </Grid>
   );
 };
 
