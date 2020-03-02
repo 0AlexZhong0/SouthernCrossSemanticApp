@@ -102,8 +102,13 @@ export const populateConditions = (
   sex: string,
   yearOfBirth: string | number
 ): void => {
-  if (sex === "" || yearOfBirth === "" || yearOfBirth < 0) {
-    alert("Make sure the form is filled out properly");
+  if (sex === "") {
+    alert("Please enter your gender for accurate results");
+    return;
+  }
+
+  if (yearOfBirth === "" || yearOfBirth < 0) {
+    alert("Please enter your date of birth for accurate results");
     return;
   }
 

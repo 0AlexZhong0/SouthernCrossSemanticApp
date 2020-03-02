@@ -26,6 +26,8 @@ import SymptomsOfConditions from "./SymptomsOfConditions";
 import RelatedConditions from "./RelatedConditions";
 import CTAButtonsGroup from "./CTAButtonsGroup";
 
+import bgImg from "css/sunlight.jpeg";
+
 export type ISymptomsOfCondition = {
   symptoms: string[];
   conditionName: string;
@@ -75,8 +77,9 @@ const MedicalForm = (): JSX.Element => {
     setRelatedConditions(relatedConds);
 
   return (
-    <div className="form-wrapper">
-      {/* The logo is too big and odd when embedded in the chatbot interface  */}
+    <div>
+      <img src={bgImg} className="img" alt="bgIMg" />
+      {/* FIXME: The logo is too big and odd when embedded in the chatbot interface  */}
       <FormHeaderLogo />
 
       <Header text="Your Details" />
