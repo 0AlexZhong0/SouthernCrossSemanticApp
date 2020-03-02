@@ -34,7 +34,10 @@ const RelatedConditions = (props: IRelatedConditionsProps) => {
             ))}
           </div>
         ) : (
-          <p key={i}>{`No related conditions of ${selectedCondition} found`}</p>
+          <p
+            className="sub-header"
+            key={i}
+          >{`No related conditions of ${selectedCondition} found`}</p>
         );
       })}
     </div>
