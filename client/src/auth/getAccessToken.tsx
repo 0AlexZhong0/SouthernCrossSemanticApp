@@ -9,8 +9,15 @@ export const getAccessToken = (): Promise<any> => {
   const login_uri: string = AUTH_BASE_URL + "/login";
 
   // keep cred secure in an .env file
-  const userName: string | undefined = process.env.REACT_APP_SANDBOX_USRNAME;
-  const password: string | undefined = process.env.REACT_APP_SANDBOX_PASSWORD;
+  const userName: string | undefined =
+    process.env.REACT_APP_ENVIRONMENT === "dev"
+      ? process.env.REACT_APP_SANDBOX_USRNAME
+      : process.env.REACT_APP_LIVE_USRNAME;
+
+  const password: string | undefined =
+    process.env.REACT_APP_ENVIRONMENT === "dev"
+      ? process.env.REACT_APP_SANDBOX_PASSWORD
+      : process.env.REACT_APP_LIVE_PASSWORD;
 
   if (!userName) throw new InvalidCredentialError("Invalid api username");
   if (!password) throw new InvalidCredentialError("Invalid api password");

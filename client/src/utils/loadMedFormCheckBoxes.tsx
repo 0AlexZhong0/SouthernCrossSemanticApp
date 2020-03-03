@@ -1,27 +1,19 @@
 import * as React from "react";
 
-// import {
-//   getIssueInfo,
-//   getIds,
-//   diagnoseConditionsFromSymptoms,
-//   InvalidFlaskResponseError
-// } from "symptomCheckerApi/mainApi";
-
-import {
-  InvalidFlaskResponseError,
-  symptomCheckerClient
-} from "symptomCheckerApi/SymptomCheckerClient";
+import { InvalidFlaskResponseError, symptomCheckerClient } from "symptomCheckerApi/SymptomCheckerClient";
 import CustomCheckBox from "components/medicalForm/helpers/CustomCheckBox";
 
 // types
-import { IResult, symsCondMapType, handleCheckAction } from "types/medForm";
+import { IResult, SymsCondMapType, handleCheckAction } from "types/medForm";
 import { InvalidCredentialError } from "auth/getAccessToken";
-import {
-  ISymptomsOfCondition,
-  IRelatedConditionsOfSymptoms
-} from "components/medicalForm/MedicalForm";
+import { ISymptomsOfCondition, IRelatedConditionsOfSymptoms } from "components/medicalForm/MedicalForm";
 
 import "css/initIssues.css";
+
+/**
+ * TODO:
+ * - the getter functions below can be improved as it is iterating through the state object on every api call
+ */
 
 // think about the possible ways of converting the code below using a reducer
 const formatSymptomsAndGetArray = (possibleSymptoms: string): string[] => {
@@ -39,10 +31,7 @@ const formatSymptomsAndGetArray = (possibleSymptoms: string): string[] => {
   return possibleSyms;
 };
 
-export const InitialIssues = (props: {
-  issues: string[];
-  handleOnCheck: handleCheckAction;
-}): JSX.Element => (
+export const InitialIssues = (props: { issues: string[]; handleOnCheck: handleCheckAction }): JSX.Element => (
   <div className="init-issues-container">
     {props.issues.map((issue: string, index: number) => (
       <CustomCheckBox
@@ -59,16 +48,17 @@ export const InitialIssues = (props: {
 const getSymptomsOfAllConditions = (conditions: string[], issueIds: number[]) => {
   const symptoms = issueIds.map(async (issueId: number, index: number) => {
     try {
-      const possibleSymptoms: string[] = formatSymptomsAndGetArray(
-        (await symptomCheckerClient._getIssueInfo(issueId)).PossibleSymptoms
-      );
+      // check if it is valid first
+      const getIssueInfoRes = await symptomCheckerClient._getIssueInfo(issueId);
+      const possibleSymptoms: string[] = formatSymptomsAndGetArray(getIssueInfoRes.PossibleSymptoms);
+
       const conditionName: string = conditions[index];
 
       return { symptoms: possibleSymptoms, conditionName };
     } catch (e) {
       // two throw statements so the program will stop executing the map function and no undefined objects are returned
       if (e instanceof InvalidCredentialError) {
-        console.log(`Gracefully handled ${e.message}`);
+        console.log(`Handling ${e.message}`);
         throw e;
       } else throw e;
     }
@@ -89,9 +79,7 @@ export const populateSymptoms = async (
 
   try {
     const ids = await symptomCheckerClient._getIds(conditions, isIssue);
-    const symptomsOfAllIssues = await Promise.all(
-      getSymptomsOfAllConditions(conditions, ids.issue_ids!)
-    );
+    const symptomsOfAllIssues = await Promise.all(getSymptomsOfAllConditions(conditions, ids.issue_ids!));
 
     onGetSymptomsOfConditions(symptomsOfAllIssues);
   } catch (e) {
@@ -101,7 +89,7 @@ export const populateSymptoms = async (
 };
 
 export const populateConditions = (
-  symptomsWithConditionAsKey: symsCondMapType,
+  symptomsConditionMap: SymsCondMapType,
   conditionsArray: string[],
   onGetRelatedConditions: (relatedConds: IRelatedConditionsOfSymptoms[]) => void,
   sex: string,
@@ -117,38 +105,28 @@ export const populateConditions = (
     return;
   }
 
-  const noDuplicateIssueNameChecker: string[] = [];
-
   /**
    * An iteration, for each condition (i.e Heart Attack), pass the selected symptoms to the
    * diagnose API to generate related conditions
    */
-  const relatedConditionsFromSymptoms: Promise<IRelatedConditionsOfSymptoms>[] = Object.keys(
-    symptomsWithConditionAsKey
-  ).map(async (selectedCondition: string) => {
-    const diagnoseResult: IResult[] = await symptomCheckerClient._getSymptomsRelatedConditions(
-      symptomsWithConditionAsKey[selectedCondition],
-      sex.toLowerCase(),
-      yearOfBirth
-    );
-
-    // select the top three issue
-    const relatedConditions = diagnoseResult
-      .slice(0, 3)
-      .map(res => res.Issue.Name)
-      .filter(
-        condition =>
-          condition !== selectedCondition &&
-          !conditionsArray.includes(condition) &&
-          !noDuplicateIssueNameChecker.includes(condition)
+  const relatedConditionsFromSymptoms: Promise<IRelatedConditionsOfSymptoms>[] = Object.keys(symptomsConditionMap).map(
+    async (selectedCondition: string) => {
+      const diagnoseResult: IResult[] = await symptomCheckerClient._getSymptomsRelatedConditions(
+        symptomsConditionMap[selectedCondition],
+        sex.toLowerCase(),
+        yearOfBirth
       );
 
-    noDuplicateIssueNameChecker.concat(relatedConditions);
+      // FIXME: some of the selected conditions will display duplicate related conditions
+      // select the top three issue
+      const relatedConditions = diagnoseResult
+        .slice(0, 3)
+        .map(res => res.Issue.Name)
+        .filter(condition => condition !== selectedCondition && !conditionsArray.includes(condition));
 
-    return { conditionNames: relatedConditions, selectedCondition };
-  });
-
-  Promise.all(relatedConditionsFromSymptoms).then(relatedConditions =>
-    onGetRelatedConditions(relatedConditions)
+      return { conditionNames: relatedConditions, selectedCondition };
+    }
   );
+
+  Promise.all(relatedConditionsFromSymptoms).then(relatedConditions => onGetRelatedConditions(relatedConditions));
 };

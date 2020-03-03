@@ -1,4 +1,4 @@
-export type symsCondMapType = { [key: string]: string[] };
+export type SymsCondMapType = { [condition: string]: string[] };
 
 export type handleCheckAction = (
   val: string,

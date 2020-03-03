@@ -18,7 +18,12 @@ const requests = (uri: string, init?: RequestInit | undefined) => {
 };
 
 // change the endpoint to the real ones
-export const AUTH_BASE_URL = "https://sandbox-authservice.priaid.ch";
-export const HEALTH_BASE_URL = "https://sandbox-healthservice.priaid.ch";
+export const AUTH_BASE_URL = `https://${
+  process.env.REACT_APP_ENVIRONMENT === "dev" ? "sandbox-authservice" : "authservice"
+}.priaid.ch`;
+
+export const HEALTH_BASE_URL = `https://${
+  process.env.REACT_APP_ENVIRONMENT === "dev" ? "sandbox-healthservice" : "healthservice"
+}.priaid.ch`;
 
 export default requests;

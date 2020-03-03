@@ -41,14 +41,21 @@ export type IRelatedConditionsOfSymptoms = {
 // store the issues somewhere
 const initIssues: string[] = ["Heart attack", "Hernia", "Kidney stones", "Urinary tract infection"];
 
+// Menstrual problems are the uncomfortable symptoms leading up to periods
+const jane_confirmed_issues = [
+  "Arthrosis",
+  "Coronary heart disease",
+  "Menstrual problems",
+  "White skin cancer",
+  "High blood pressure"
+];
+
 const MedicalForm = (): JSX.Element => {
   const [symsCondsMap, symsCondsMapDispatch] = React.useReducer(symsCondsMapReducer, {});
   const [conditionsArray, condsArrDispatch] = React.useReducer(conditionsArrayReducer, []);
 
   const [symptomsOfCondition, setSymptomsOfCondition] = React.useState<ISymptomsOfCondition[]>();
-  const [relatedConditions, setRelatedConditions] = React.useState<
-    IRelatedConditionsOfSymptoms[]
-  >();
+  const [relatedConditions, setRelatedConditions] = React.useState<IRelatedConditionsOfSymptoms[]>();
 
   const { sex, dob } = React.useContext(PersonalInfoContext);
 
@@ -87,41 +94,24 @@ const MedicalForm = (): JSX.Element => {
       <Header text="Your Health Condition(s)" />
 
       {/* Conditions and Symptoms card below */}
-      <Grid
-        className="conditions-and-symptoms-container"
-        container={true}
-        alignItems="center"
-        justify="center"
-      >
+      <Grid className="conditions-and-symptoms-container" container={true} alignItems="center" justify="center">
         <Grid item={true} xs={12} sm={12} md={12}>
           <Card>
             <CardContent>
               <div>
                 <p className="description">{initialConfirmConditionDescription}</p>
-                <InitialIssues issues={initIssues} handleOnCheck={handleOnCheck} />
+                <InitialIssues issues={jane_confirmed_issues} handleOnCheck={handleOnCheck} />
 
-                <SymptomsOfConditions
-                  symptomsOfCondition={symptomsOfCondition}
-                  handleOnCheck={handleOnCheck}
-                />
+                <SymptomsOfConditions symptomsOfCondition={symptomsOfCondition} handleOnCheck={handleOnCheck} />
 
-                <RelatedConditions
-                  relatedConditions={relatedConditions}
-                  handleOnCheck={handleOnCheck}
-                />
+                <RelatedConditions relatedConditions={relatedConditions} handleOnCheck={handleOnCheck} />
 
                 <CTAButtonsGroup
                   populateSymptoms={() => {
                     populateSymptoms(conditionsArray, handleOnGetSymptomsOfCondition);
                   }}
                   populateRelatedConditions={() =>
-                    populateConditions(
-                      symsCondsMap,
-                      conditionsArray,
-                      handleOnGetRelatedConditions,
-                      sex,
-                      dob.year
-                    )
+                    populateConditions(symsCondsMap, conditionsArray, handleOnGetRelatedConditions, sex, dob.year)
                   }
                 />
               </div>

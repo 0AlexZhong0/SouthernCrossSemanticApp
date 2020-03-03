@@ -14,13 +14,14 @@ class SymptomCheckerClient {
   private token: string | undefined;
 
   constructor() {
-    this._loadAccessToken();
+    this._loadAccessToken().then(token => this.setToken(token));
   }
 
   public _loadAccessToken = async () => {
     try {
       const token = (await getAccessToken()).Token;
-      this.setToken(token);
+
+      return token;
     } catch (e) {
       if (e instanceof InvalidCredentialError) alert(e.message);
       throw e;
