@@ -1,6 +1,6 @@
 .init-issues-container {
   display: flex;
+  justify-content: center;
   flex-wrap: wrap;
   margin-bottom: 1rem;
-  /* justify-content: center; */
 }

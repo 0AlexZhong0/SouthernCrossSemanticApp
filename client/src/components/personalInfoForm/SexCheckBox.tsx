@@ -1,28 +1,35 @@
 import * as React from "react";
 import { FormControlLabel, Checkbox } from "@material-ui/core";
+import { PersonalInfoContext } from "contexts/PersonalInfoState";
 
 import "css/helperText.css";
 
-const SexCheckBox = (props: { gender: string; onCheck: (gender: string) => void }): JSX.Element => {
-  const [checked, setChecked] = React.useState(false);
-  const { gender, onCheck } = props;
+const MALE = "Male";
+const FEMALE = "Female";
 
-  const handleChecked = (): void => {
-    if (checked) {
-      onCheck("");
-      setChecked(false);
-    } else {
-      onCheck(gender);
-      setChecked(true);
-    }
+const SexCheckBoxes = (props: { onCheck: (gender: string) => void }): JSX.Element => {
+  const { sex } = React.useContext(PersonalInfoContext);
+  const { onCheck } = props;
+
+  const handleChecked = (gender: string): void => {
+    if (sex === gender) onCheck("");
+    else onCheck(gender);
   };
 
   return (
-    <FormControlLabel
-      control={<Checkbox checked={checked} onChange={handleChecked} style={{ color: "#008bce" }} />}
-      label={<p className="checkbox-text">{gender}</p>}
-    />
+    <div>
+      <FormControlLabel
+        control={<Checkbox checked={sex === MALE} onChange={() => handleChecked(MALE)} style={{ color: "#008bce" }} />}
+        label={<p className="checkbox-text">{MALE}</p>}
+      />
+      <FormControlLabel
+        control={
+          <Checkbox checked={sex === FEMALE} onChange={() => handleChecked(FEMALE)} style={{ color: "#008bce" }} />
+        }
+        label={<p className="checkbox-text">{FEMALE}</p>}
+      />
+    </div>
   );
 };
 
-export default SexCheckBox;
+export default SexCheckBoxes;

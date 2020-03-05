@@ -78,8 +78,7 @@ const PersonalInfoForm = (): JSX.Element => {
               />
             </form>
             <p className="header">Biological sex</p>
-            <SexCheckBox gender="Male" onCheck={handleOnSexChecked} />
-            <SexCheckBox gender="Female" onCheck={handleOnSexChecked} />
+            <SexCheckBox onCheck={handleOnSexChecked} />
           </CardContent>
         </Card>
       </Grid>

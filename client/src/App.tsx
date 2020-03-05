@@ -1,16 +1,10 @@
 import * as React from "react";
-import MedicalForm from "components/medicalForm/MedicalForm";
-// import ChatFeed from "Components/ChatBot/ChatFeed"
-import PersonalInfoStateProvider from "contexts/PersonalInfoState";
+import ChatFeed from "components/chatBot/ChatFeed";
+import MedicalFormContainer from "components/medicalForm";
 
 const App: React.FC = (): JSX.Element => {
-  return (
-    <PersonalInfoStateProvider>
-      <MedicalForm />
-    </PersonalInfoStateProvider>
-  );
-
-  // return <ChatFeed />
+  return <MedicalFormContainer />;
+  // return <ChatFeed />;
 };
 
 export default App;

@@ -42,13 +42,15 @@ export type IRelatedConditionsOfSymptoms = {
 const initIssues: string[] = ["Heart attack", "Hernia", "Kidney stones", "Urinary tract infection"];
 
 // Menstrual problems are the uncomfortable symptoms leading up to periods
-const jane_confirmed_issues = [
+const janeConfirmedIssues = [
   "Arthrosis",
   "Coronary heart disease",
   "Menstrual problems",
   "White skin cancer",
   "High blood pressure"
 ];
+
+const juanitaConfirmedIssues = ["Acute inflammation of lung", "Back pain", "Cluster headache"];
 
 const MedicalForm = (): JSX.Element => {
   const [symsCondsMap, symsCondsMapDispatch] = React.useReducer(symsCondsMapReducer, {});
@@ -83,6 +85,28 @@ const MedicalForm = (): JSX.Element => {
   const handleOnGetRelatedConditions = (relatedConds: IRelatedConditionsOfSymptoms[]) =>
     setRelatedConditions(relatedConds);
 
+  const reset = () => {
+    // FIXME: should have no need to define the payload in here, but think of a solution later
+    symsCondsMapDispatch({ type: "reset", payload: { conditionName: "", symptom: "" } });
+    condsArrDispatch({ type: "reset", condition: "" });
+    setSymptomsOfCondition(undefined);
+    setRelatedConditions(undefined);
+  };
+
+  const areAllFieldsEmpty =
+    Object.keys(symsCondsMap).length === 0 &&
+    conditionsArray.length === 0 &&
+    !symptomsOfCondition &&
+    !relatedConditions;
+
+  const onSubmit = () => {
+    if (!areAllFieldsEmpty) {
+      alert("Thanks for completing the form, we will be in contact with you shortly");
+      // hard refresh the page
+      window.location.reload(false);
+    }
+  };
+
   return (
     <div>
       <img src={sunglightBgImg} className="sunglightBgImg" alt="sunglightBgImg" />
@@ -100,13 +124,14 @@ const MedicalForm = (): JSX.Element => {
             <CardContent>
               <div>
                 <p className="description">{initialConfirmConditionDescription}</p>
-                <InitialIssues issues={jane_confirmed_issues} handleOnCheck={handleOnCheck} />
+                <InitialIssues issues={juanitaConfirmedIssues} handleOnCheck={handleOnCheck} />
 
                 <SymptomsOfConditions symptomsOfCondition={symptomsOfCondition} handleOnCheck={handleOnCheck} />
 
                 <RelatedConditions relatedConditions={relatedConditions} handleOnCheck={handleOnCheck} />
 
                 <CTAButtonsGroup
+                  onSubmit={onSubmit}
                   populateSymptoms={() => {
                     populateSymptoms(conditionsArray, handleOnGetSymptomsOfCondition);
                   }}

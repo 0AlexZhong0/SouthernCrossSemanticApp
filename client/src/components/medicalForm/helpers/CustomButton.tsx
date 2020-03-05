@@ -2,7 +2,7 @@ import * as React from "react";
 import { Button } from "@material-ui/core";
 
 interface ICustomButtonProps {
-  loadComponent: () => void;
+  onClick: () => void;
   title: string;
 }
 
@@ -13,10 +13,10 @@ const CustomButton = (props: ICustomButtonProps): JSX.Element => {
       style={{
         backgroundColor: "#008bce",
         color: "white",
-        marginBottom: "0.4rem",
+        marginBottom: "0.6rem",
         fontSize: "calc(0.75rem + 0.4vw)"
       }}
-      onClick={props.loadComponent}
+      onClick={props.onClick}
     >
       {props.title}
     </Button>

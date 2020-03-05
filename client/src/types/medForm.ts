@@ -16,11 +16,11 @@ export interface IResult extends IIssue {
 }
 
 export interface symsMapDispatchActionType {
-  type: "addFirstSymptom" | "pushSymptom" | "removeSymptom" | "reset";
-  payload?: { conditionName: string; symptom: string };
+  type: "pushSymptom" | "removeSymptom" | "reset";
+  payload: { conditionName: string; symptom: string };
 }
 
 export interface condsArrDispatchActionType {
-  type: "pushCondition" | "removeCondition";
+  type: "pushCondition" | "removeCondition" | "reset";
   condition: string;
 }
